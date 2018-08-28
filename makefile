@@ -1,12 +1,12 @@
 CC=g++
-CCFLAGS=-Wall -Weffc++ -Wextra -Wpedantic
+CCFLAGS=-Wall -Weffc++ -Wextra -Wpedantic -lwiringPi
 HEADERS = ./include/*.h
 OBJ = ./main.o ./include/*.cc
 
 default: simulation
 
 %.o: %.cc $(HEADERS)
-	$(CC) -c -o $@ $< $(CCFLAGS)
+	$(CC) -c -o $@ $< $(CCFLAGS) 
 
 simulation: $(OBJ)
 	$(CC) -o $@ $^ $(CCFLAGS)
