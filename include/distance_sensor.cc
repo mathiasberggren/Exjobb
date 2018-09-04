@@ -1,4 +1,6 @@
 #include <wiringPi.h>
+#include "timer.h"
+#include "distance_sensor.h"
 /* For testing purposes
 
 #include "timer.h"
@@ -23,7 +25,7 @@ void trigger_sensor(int const& trig_pin)
 }
 */
 
-double get_distance(int const& trig_pin = 26, int const& echo_pin = 27)
+double Distance_sensor::get_distance()const
 {
 	digitalWrite(trig_pin, 0);
 	digitalWrite(trig_pin, 1);

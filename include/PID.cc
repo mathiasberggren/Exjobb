@@ -4,8 +4,8 @@
 
 using namespace std;
 
-PID::PID(double dt, double kp, double ki, double kd, double min, double max) 
-    : dt{dt}, kp{kp}, ki{ki}, kd{kd}, old_error{0}, ITerm {0}, outMin{min}, outMax {max}   
+PID::PID(double kp, double ki, double kd, double min, double max) 
+    : kp{kp}, ki{ki}, kd{kd}, old_error{0}, ITerm {0}, outMin{min}, outMax {max}   
 {}
 
 void PID::setOutputLimits(double min, double max)
@@ -17,7 +17,7 @@ void PID::setOutputLimits(double min, double max)
     outMax = max;        
 }
 
-double PID::calculate(double error)
+double PID::calculate(double error, double dt)
 {
     // P Term
     //double Pout = kp * error;

@@ -1,3 +1,6 @@
+#ifndef TIMER_H
+#define TIMER_H
+
 #include <chrono>
 
 class Timer
@@ -14,3 +17,5 @@ class Timer
 		typedef std::chrono::duration<double, std::ratio<1> > second;
 		std::chrono::time_point<clock> starting_time;
 };
+
+#endif

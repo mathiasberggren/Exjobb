@@ -7,12 +7,12 @@ class PID
 {
 
     public:
-        // Input parameters is: dt, kp, ki, kd.
-        PID(double, double, double, double, double max = 100, double min = -100);
+        // Input parameters is:, kp, ki, kd.
+        PID( double, double, double, double max = 100, double min = -100);
 
         void setOutputLimits(double, double); // Send in range for clamping
-        void setSampleTime(double t) { dt = t; }; // Unit is milliseconds 
-        double calculate(double);
+      //  void setSampleTime(double t) { dt = t; }; // Unit is milliseconds 
+        double calculate(double, double);
 
         double getKp()const { return kp; };
         double getKi()const { return ki; };
@@ -23,7 +23,7 @@ class PID
         
     private:
        
-        double dt; // Loop interval time 
+//        double dt; // Loop interval time 
         double kp;
         double ki;
         double kd;

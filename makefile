@@ -1,7 +1,7 @@
 CC=g++
-CCFLAGS=-Wall -Weffc++ -Wextra -Wpedantic -lwiringPi
+CCFLAGS=-Wall -Weffc++ -Wextra -Wpedantic -lwiringPi -lpthread
 HEADERS = ./include/*.h
-OBJ = ./main.o ./include/*.cc
+OBJ = ./main.o ./include/*.cc ./include/*.cpp
 
 default: simulation
 
@@ -14,4 +14,4 @@ simulation: $(OBJ)
 .PHONY: clean
 
 clean:
-	rm -f ./*.o ./include/*.o
+	rm -f ./*.o ./include/*.o ./*.swp ./include/*.swp
