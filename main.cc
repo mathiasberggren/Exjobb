@@ -5,6 +5,7 @@
 #include <cctype>
 
 #include "PID.cc"
+#include "q_learning.cc"
 
 using std::cin;
 using std::cout;
