@@ -1,10 +1,15 @@
-/* Q-Learning system for Bachelor thesis
+/* Q-learning system for Bachelor thesis
  *
  * To compile just use make.
  * (Assumes wiringPi has been installed)
  *
  * Written by: mathiasberggren1@gmail.com
  */
+
+
+#ifndef QLEARNING
+#define QLEARNING
+
 #include <cmath>
 #include <random>
 #include <unordered_map>
@@ -12,40 +17,9 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-//#include <vector>
-#include <wiringPi.h>
-//#include <wiringSerial.h>
-//#include <softPwm.h>
-#include "include/timer.h"
-#include "include/distance_sensor.h"
-#include "include/ADS1115.h"
-/* Arduino serial transfers */
-//#define DEVICE "/dev/ttyACM0"
-//#define BAUDRATE 115200
-/* Arduino serial transer */
 
-/* Set values for environment */
-#define ANGLE_MAX 3200
-#define ANGLE_MIN 1800
-#define LIN_MAX 0.9
-#define LIN_MIN 0.2
 
-#define ANGLE_SETPOINT 2550
-#define LIN_SETPOINT 0.55
-/* Set values for environment */
 
-/* Raspberry I/O Pins */
-#define MOTOR_PWM 1
-#define MOTOR_OUT1 15
-#define MOTOR_OUT2 16
-#define DIST_ECHO 26
-#define DIST_TRIG 27
-/* Raspberry I/O Pins */
-
-int get_angle(int const&);
-//bool angle_limit(int const&);
-//bool linear_limit(double const&);
-void motor_throughput(double const&);
 
 void read_from_file(std::ifstream &, std::unordered_map<std::string, double> &,
 		std::unordered_map<std::string, int> & );
@@ -57,11 +31,11 @@ double getMaxActionQValue(std::string const&, std::unordered_map<std::string, do
 std::string get_state(int, double, double, double);
 double get_reward(std::string const&);
 
-
-
 bool training {false};
 double explore_chance		{0.5};  // During training phase
-int run_qlearning(std::string file_name = "")
+
+
+int run_qlearning(std::string const& file_name = "")
 {
 	/* HARDWARE INITIATION */
 	bool PWM		{false};
@@ -262,7 +236,7 @@ std::string get_state(int angle, double v_angle, double x, double vx)
 		v_anglestate = 2;
 	else if(v_angle > 0)
 		v_anglestate = 1;
-	else 
+	else
 		v_anglestate = 0;
 
 	int xstate {};
@@ -277,12 +251,12 @@ std::string get_state(int angle, double v_angle, double x, double vx)
 	if(std::abs(vx) < 0.3)
 		vxstate = 2;
 	else if(vxstate > 0)
-		vxstate = 1; 
+		vxstate = 1;
 	else
 		vxstate = 0;
 
 	ss << anglestate << "/" << v_anglestate << "/" << xstate << "/" << vxstate;
-	return ss.str();	
+	return ss.str();
 }
 
 
@@ -305,7 +279,7 @@ double get_reward(std::string const& state)
 		reward += 15;
 	else if(anglestate == 3 || anglestate == 2)
 		reward -= 10;
-	else 
+	else
 		reward -= 30;
 
 	if(v_anglestate == 2)
@@ -390,12 +364,5 @@ void perform_action(int action)
 	}
 }
 
-bool angle_limit(int const& a)
-{
-	return (a > ANGLE_MIN && a < ANGLE_MAX);
-}
 
-bool linear_limit(double const& l)
-{
-	return (l > LIN_MIN && l < LIN_MAX);
-}
+#endif
