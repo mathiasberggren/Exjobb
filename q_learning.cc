@@ -17,7 +17,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-
+#include "system_functions.cc"
 
 
 
@@ -71,7 +71,7 @@ int run_qlearning(std::string const& file_name = "")
 	/* Q-Learning INITIATION */
 
 	int		angle	{};
-	int oldangle	{get_angle(adc.getMilliVolts())};
+	int oldangle	{adc.getMilliVolts()};
 	double vangle	{};
 	double x		{};
 	double oldx		{dist.get_distance()};
@@ -109,7 +109,7 @@ int run_qlearning(std::string const& file_name = "")
 	{
 		iterations++;
 		//while(t1.elapsed() < sampling_time) {continue;}
-		angle	= get_angle(adc.getMilliVolts());
+		angle	= adc.getMilliVolts();
 		x			= dist.get_distance();
 
 		auto interval_time = t1.elapsed();
@@ -273,7 +273,7 @@ double get_reward(std::string const& state)
 	ss << state;
 	ss >> anglestate >> trash >> v_anglestate >> trash >> xstate >> trash >> v_xstate;
 
-	if(anglestate = 6)
+	if(anglestate == 6)
 		reward += 40;
 	else if(anglestate == 4 || anglestate == 5)
 		reward += 15;

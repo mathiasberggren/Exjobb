@@ -6,37 +6,20 @@
  * Written by: mathiasberggren1@gmail.com
  */
 
+#ifndef PIDCONTROLLER_CC
+#define PIDCONTROLLER_CC
+
 
 #include <stdio.h>
 #include <iostream>
 //#include <vector>
+#include "system_functions.cc"
 
-//#include <wiringSerial.h>
 #include <softPwm.h>
+//#include <wiringSerial.h>
 /* Arduino serial transfers */
 //#define DEVICE "/dev/ttyACM0"
 //#define BAUDRATE 115200
-/* Arduino serial transer */
-
-/* PID controllers */
-#define ANGLE_MAX 3200
-#define ANGLE_MIN 1800
-#define LIN_MAX 0.9
-#define LIN_MIN 0.2
-
-#define ANGLE_SETPOINT 2550 //2550
-#define LIN_SETPOINT 0.55
-/* PID controllers */
-
-/* Raspberry I/O Pins */
-#define MOTOR_PWM 1
-#define MOTOR_OUT1 15
-#define MOTOR_OUT2 16
-#define DIST_ECHO 26
-#define DIST_TRIG 27
-/* Raspberry I/O Pins */
-
-
 
 int run_PID()
 {
@@ -82,7 +65,7 @@ int run_PID()
 	{
         while(t1.elapsed() < sampling_time) {continue;}
 		t1.reset();
-        current_rot = get_angle(adc.getMilliVolts());
+        current_rot = adc.getMilliVolts();
 		current_pos = dist.get_distance();
 
 		if(angle_limit(current_rot))//&& linear_limit(current_pos))
@@ -138,3 +121,5 @@ int run_PID()
 
 	return total_runtime.elapsed();
 }
+
+#endif
