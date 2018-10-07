@@ -31,14 +31,13 @@ double getMaxActionQValue(std::string const&, std::unordered_map<std::string, do
 std::string get_state(int, double, double, double);
 double get_reward(std::string const&);
 
-bool training {false};
+bool training {true};
 double explore_chance		{0.5};  // During training phase
 
-
-int run_qlearning(std::string const& file_name = "")
-{
+int run_qlearning(std::string const& file_name = "", bool train_mode = true)
+{	
+	training = train_mode;
 	/* HARDWARE INITIATION */
-	bool PWM		{false};
 	/* INIT */
 	wiringPiSetup();
 	pinMode(MOTOR_PWM, OUTPUT);
@@ -65,13 +64,11 @@ int run_qlearning(std::string const& file_name = "")
 	int iterations {0};
 	int print_counter  {0};
 
-	bool paused {true};
-	bool train  {true};
 	bool using_file {false};
 	/* Q-Learning INITIATION */
 
 	int		angle	{};
-	int oldangle	{adc.getMilliVolts()};
+	int oldangle	{(int)adc.getMilliVolts()};
 	double vangle	{};
 	double x		{};
 	double oldx		{dist.get_distance()};
@@ -112,11 +109,12 @@ int run_qlearning(std::string const& file_name = "")
 		angle	= adc.getMilliVolts();
 		x			= dist.get_distance();
 
-		auto interval_time = t1.elapsed();
-		t1.reset();
+		//auto interval_time = t1.elapsed();
+		//t1.reset();
 
-		vangle   = static_cast<double>(oldangle - angle) / interval_time;
-		vx		   = (oldx - x) / interval_time;
+		vangle   = oldangle - angle ;// / interval_time;
+//		std::cout << "Vinkelhastigheten är: " <<  vangle << ". Oldangle - angle = " << oldangle - angle<< std::endl;
+		vx		   = (oldx - x);// / interval_time;
 		oldangle = angle;
 		oldx	   = x;
 
@@ -127,7 +125,7 @@ int run_qlearning(std::string const& file_name = "")
 			double reward {get_reward(new_state)};
 			if(!previous_state.empty())
 			{
-				std::string prev_stateaction {previous_state + std::to_string(previous_action)};
+				std::string prev_stateaction {previous_state + '/' + std::to_string(previous_action)};
 
 				//Double check if working
 				//if(Ntable.find(prev_stateaction) == Ntable.end())
@@ -144,18 +142,20 @@ int run_qlearning(std::string const& file_name = "")
 
 				Qtable[prev_stateaction] = qval;
 
-				perform_action(select_action(new_state, Qtable));
+				int action = select_action(new_state, Qtable);
+				perform_action(action);
 
 				print_counter++;
 				if(print_counter % 10 == 0)
 				{
-					std::cout << "Iteration: " << iterations << " Angle: " << angle << " vAngle : "
-						<< vangle << " X: " << x << " vx: " << vx << " Prev State: " << previous_state
+					std::cout << "Iteration: " << iterations << " Action: " << action << " Angle: " << angle << " vAngle : "
+						<< vangle << " X: " << x << " vx: " << vx << " Prev State: " << prev_stateaction
 						<< " Prev Reward: " << previous_reward << " Prev Q-value: " << qval
 						<< " Tested: " << num_tested << " times." << std::endl;
 				}
+				previous_action = action;
+				previous_reward = reward;
 			}
-			previous_reward = reward;
 			previous_state = new_state;
 		}
 		else
@@ -206,7 +206,7 @@ void write_to_file(std::ofstream & ofs, std::unordered_map<std::string, double> 
 	auto itNtable = Ntable.begin();
 	for (auto itQtable : Qtable)
 	{
-		ofs << itQtable.first << std::setw(13) << itQtable.second << std::setw(13) << itNtable -> second << std::endl;
+		ofs << itQtable.first << std::setw(20) << itQtable.second << std::setw(20) << itNtable -> second << std::endl;
 		++itNtable;
 	}
 }
@@ -232,17 +232,24 @@ std::string get_state(int angle, double v_angle, double x, double vx)
 		anglestate = 6;
 
 	int v_anglestate {};
-	if (std::abs(v_angle) < 0.3)
-		v_anglestate = 2;
-	else if(v_angle > 0)
-		v_anglestate = 1;
-	else
+//	if (std::abs(v_angle) < 5)
+//		v_anglestate = 4;
+	if(v_angle > 15)
 		v_anglestate = 0;
+	else if(v_angle > 5)
+		v_anglestate = 2;
 
+	else if(v_angle < -15)
+		v_anglestate = 1;
+	else if(v_angle < -5)
+		v_anglestate = 3;
+	else
+		v_anglestate = 4;
+	
 	int xstate {};
-	if(x > 70)
+	if(x > 0.70)
 		xstate = 0;
-	else if(x < 30)
+	else if(x < 0.30)
 		xstate = 1;
 	else
 		xstate = 2;
@@ -274,18 +281,20 @@ double get_reward(std::string const& state)
 	ss >> anglestate >> trash >> v_anglestate >> trash >> xstate >> trash >> v_xstate;
 
 	if(anglestate == 6)
-		reward += 40;
-	else if(anglestate == 4 || anglestate == 5)
-		reward += 15;
-	else if(anglestate == 3 || anglestate == 2)
-		reward -= 10;
-	else
-		reward -= 30;
-
-	if(v_anglestate == 2)
 		reward += 20;
+	else if(anglestate == 4 || anglestate == 5)
+		reward += 10;
+	else if(anglestate == 3 || anglestate == 2)
+		reward -= 5;
 	else
-		reward -= 10;
+		reward -= 20;
+
+	if(v_anglestate == 4)
+		reward += 20;
+	else if(v_anglestate == 3 || v_anglestate == 2)
+		reward += 5;
+	else
+		reward -= 20;
 
 	if(xstate == 2)
 		reward += 10;
@@ -302,7 +311,7 @@ double getMaxActionQValue(std::string const& state, std::unordered_map<std::stri
 	double maxQval = std::numeric_limits<double>::lowest();
 	for(int i{}; i < 3; i++)
 	{
-		auto table_value {Qtable.find(state + std::to_string(i))};
+		auto table_value {Qtable.find(state + '/' + std::to_string(i))};
 		if(table_value != Qtable.end() && table_value -> second > maxQval)
 			maxQval = table_value -> second;
 	}
@@ -315,10 +324,9 @@ double getMaxActionQValue(std::string const& state, std::unordered_map<std::stri
 int select_action(std::string const& state, std::unordered_map<std::string, double> const& Qtable)
 {
 	int action {};
-
-	std::random_device rd;				//For training
-	std::uniform_real_distribution<double> distr_train  (0.0,1.0);
+	std::random_device rd;	
 	std::uniform_int_distribution<int>     distr_action (0,2);
+	std::uniform_real_distribution<double> distr_train  (0.0,1.0);
 
 	//Train
 	if (training && distr_train(rd) < explore_chance)
@@ -328,7 +336,7 @@ int select_action(std::string const& state, std::unordered_map<std::string, doub
 		double maxQval = std::numeric_limits<double>::lowest(); // Lowest possible value
 		for (int i {}; i < 3; i++)
 		{
-			std::string test_pair {state + std::to_string(i)}; //Test all actions
+			std::string test_pair {state + '/' + std::to_string(i)}; //Test all actions
 			double Qval {};
 			auto table_value = Qtable.find(test_pair);
 				if(table_value != Qtable.end())
