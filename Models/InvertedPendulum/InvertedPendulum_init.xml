@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- description of the model interface using an extention of the FMI standard -->
+<fmiModelDescription cmt_numberOfBooleanParameters="NPBOOL:   number of bool parameters,                          OMC" fmiVersion="1.0" cmt_numberOfRealAlgebraicVariables="NY:       number of real variables,                           OMC" cmt_numberOfBooleanAlgebraicVariables="NYBOOL:   number of alg. bool variables,                      OMC" OPENMODELICAHOME="/usr" numberOfFunctions="0" numberOfStringParameters="0" numberOfIntegerParameters="0" numberOfOutputVariables="1" numberOfBooleanAliasVariables="0" numberOfRealParameters="4" numberOfEventIndicators="0" guid="{4113bc68-8717-47e5-99e9-c9419d50693f}" generationTool="OpenModelica Compiler OpenModelica 1.13.2" cmt_numberOfOutputVariables="NO:       number of outputvar on topmodel,                    OMC" generationDateAndTime="2019-09-26T09:33:11Z" numberOfBooleanParameters="0" cmt_numberOfIntegerAliasVariables="NAINT:    number of alias int variables,                      OMC" cmt_numberOfTimeEvents="NG_SAM:   number of zero crossings that are samples,          OMC" numberOfIntegerAliasVariables="0" cmt_numberOfExternalObjects="NEXT:     number of external objects,                         OMC" cmt_numberOfIntegerParameters="NPINT:    number of int parameters,                           OMC" numberOfStringAliasVariables="0" numberOfRealAlgebraicAliasVariables="0" numberOfInputVariables="1" numberOfIntegerAlgebraicVariables="0" cmt_numberOfStringAlgebraicVariables="NYSTR:    number of alg. string variables,                    OMC" numberOfBooleanAlgebraicVariables="0" variableNamingConvention="structured" numberOfRealAlgebraicVariables="6" cmt_numberOfStringAliasVariables="NASTR:    number of alias string variables,                   OMC" cmt_numberOfFunctions="NFUNC:    number of functions used by the simulation,         OMC" cmt_numberOfContinuousStates="NX:       number of states,                                   FMI" numberOfTimeEvents="0" modelIdentifier="InvertedPendulum" modelName="InvertedPendulum" numberOfContinuousStates="4" numberOfExternalObjects="0" cmt_numberOfRealAlgebraicAliasVariables="NA:       number of alias variables,                          OMC" cmt_numberOfRealParameters="NP:       number of parameters,                               OMC" description="" numberOfStringAlgebraicVariables="0" cmt_numberOfEventIndicators="NG:       number of zero crossings,                           FMI" cmt_numberOfStringParameters="NPSTR:    number of string parameters,                        OMC" cmt_numberOfInputVariables="NI:       number of inputvar on topmodel,                     OMC" cmt_numberOfBooleanAliasVariables="NABOOL:   number of alias bool variables,                     OMC" cmt_numberOfIntegerAlgebraicVariables="NYINT:    number of alg. int variables,                       OMC">
+ <!-- startTime, stopTime, tolerance are FMI specific, all others are OMC specific -->
+ <DefaultExperiment variableFilter=".*" solver="dassl" outputFormat="mat" startTime="0" stopTime="1" tolerance="1e-06" stepSize="0.002"/>
+ <!-- variables in the model -->
+ <ModelVariables>
+  <ScalarVariable fileWritable="true" isProtected="false" fileName="/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.mo" causality="internal" classIndex="0" isValueChangeable="true" alias="noAlias" name="theta" valueReference="1000" classType="rSta" endLine="14" variability="continuous" startLine="14" isDiscrete="false" endColumn="27" hideResult="false" startColumn="3">
+   <Real fixed="false" start="3.665191429188333" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable fileWritable="true" isProtected="false" fileName="/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.mo" causality="internal" classIndex="1" isValueChangeable="true" alias="noAlias" name="theta_velo" valueReference="1001" classType="rSta" endLine="15" variability="continuous" startLine="15" isDiscrete="false" endColumn="31" hideResult="false" startColumn="3">
+   <Real fixed="false" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable fileWritable="true" isProtected="false" fileName="/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.mo" causality="internal" classIndex="2" isValueChangeable="true" alias="noAlias" name="x_pos" valueReference="1002" classType="rSta" endLine="18" variability="continuous" startLine="18" isDiscrete="false" endColumn="29" hideResult="false" startColumn="3">
+   <Real fixed="false" start="0.0" unit="m" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable fileWritable="true" isProtected="false" fileName="/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.mo" causality="internal" classIndex="3" isValueChangeable="true" alias="noAlias" name="x_vel" valueReference="1003" classType="rSta" endLine="19" variability="continuous" startLine="19" isDiscrete="false" endColumn="33" hideResult="false" startColumn="3">
+   <Real fixed="false" unit="m/s" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable fileWritable="true" isProtected="false" fileName="/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.mo" causality="internal" classIndex="0" isValueChangeable="false" alias="noAlias" name="der(theta)" valueReference="1004" classType="rDer" endLine="14" variability="continuous" startLine="14" isDiscrete="false" endColumn="27" hideResult="false" startColumn="3">
+   <Real fixed="false" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable fileWritable="true" isProtected="false" fileName="/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.mo" causality="internal" classIndex="1" isValueChangeable="false" alias="noAlias" name="der(theta_velo)" valueReference="1005" classType="rDer" endLine="15" variability="continuous" startLine="15" isDiscrete="false" endColumn="31" hideResult="false" startColumn="3">
+   <Real fixed="false" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable fileWritable="true" isProtected="false" fileName="/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.mo" causality="internal" classIndex="2" isValueChangeable="false" alias="noAlias" name="der(x_pos)" valueReference="1006" classType="rDer" endLine="18" variability="continuous" startLine="18" isDiscrete="false" endColumn="29" hideResult="false" startColumn="3">
+   <Real fixed="false" unit="m.s-1" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable fileWritable="true" isProtected="false" fileName="/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.mo" causality="internal" classIndex="3" isValueChangeable="false" alias="noAlias" name="der(x_vel)" valueReference="1007" classType="rDer" endLine="19" variability="continuous" startLine="19" isDiscrete="false" endColumn="33" hideResult="false" startColumn="3">
+   <Real fixed="false" unit="m.s-2" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable fileWritable="true" isProtected="true" fileName="" causality="internal" classIndex="0" isValueChangeable="false" alias="noAlias" name="$cse2" valueReference="1008" classType="rAlg" endLine="0" variability="continuous" startLine="0" isDiscrete="false" endColumn="0" hideResult="true" startColumn="0">
+   <Real fixed="false" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable fileWritable="true" isProtected="true" fileName="" causality="internal" classIndex="1" isValueChangeable="false" alias="noAlias" name="$cse3" valueReference="1009" classType="rAlg" endLine="0" variability="continuous" startLine="0" isDiscrete="false" endColumn="0" hideResult="true" startColumn="0">
+   <Real fixed="false" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable causality="input" classIndex="2" endLine="22" isDiscrete="false" inputIndex="0" isProtected="false" endColumn="28" alias="noAlias" valueReference="1010" hideResult="false" fileWritable="true" variability="continuous" startLine="22" fileName="/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.mo" name="F" isValueChangeable="true" classType="rAlg" startColumn="3">
+   <Real fixed="true" start="0.0" unit="N" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable fileWritable="true" isProtected="false" fileName="/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.mo" causality="output" classIndex="3" isValueChangeable="false" alias="noAlias" name="Y" valueReference="1011" classType="rAlg" endLine="23" variability="continuous" startLine="23" isDiscrete="false" endColumn="28" hideResult="false" startColumn="3">
+   <Real displayUnit="deg" fixed="false" start="3.665191429188333" unit="rad" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable fileWritable="true" isProtected="false" fileName="/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.mo" causality="internal" classIndex="4" isValueChangeable="false" alias="noAlias" name="theta_accel" valueReference="1012" classType="rAlg" endLine="16" variability="continuous" startLine="16" isDiscrete="false" endColumn="37" hideResult="false" startColumn="3">
+   <Real fixed="false" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable fileWritable="true" isProtected="false" fileName="/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.mo" causality="internal" classIndex="5" isValueChangeable="false" alias="noAlias" name="x_acc" valueReference="1013" classType="rAlg" endLine="20" variability="continuous" startLine="20" isDiscrete="false" endColumn="37" hideResult="false" startColumn="3">
+   <Real fixed="false" unit="m/s2" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable fileWritable="true" isProtected="false" fileName="/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.mo" causality="internal" classIndex="0" isValueChangeable="true" alias="noAlias" name="M" valueReference="1014" classType="rPar" endLine="5" variability="parameter" startLine="5" isDiscrete="true" endColumn="26" hideResult="false" startColumn="3">
+   <Real fixed="true" start="1.0" unit="kg" min="0.0" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable fileWritable="true" isProtected="false" fileName="/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.mo" causality="internal" classIndex="1" isValueChangeable="true" alias="noAlias" name="g" valueReference="1015" classType="rPar" endLine="8" variability="parameter" startLine="8" isDiscrete="true" endColumn="37" hideResult="false" startColumn="3">
+   <Real fixed="true" start="9.82" unit="m/s2" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable fileWritable="true" isProtected="false" fileName="/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.mo" causality="internal" classIndex="2" isValueChangeable="true" alias="noAlias" name="l" valueReference="1016" classType="rPar" endLine="7" variability="parameter" startLine="7" isDiscrete="true" endColumn="30" hideResult="false" startColumn="3">
+   <Real fixed="true" start="0.5" unit="m" useNominal="false"/>
+  </ScalarVariable>
+  <ScalarVariable fileWritable="true" isProtected="false" fileName="/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.mo" causality="internal" classIndex="3" isValueChangeable="true" alias="noAlias" name="m" valueReference="1017" classType="rPar" endLine="6" variability="parameter" startLine="6" isDiscrete="true" endColumn="28" hideResult="false" startColumn="3">
+   <Real fixed="true" start="0.3" unit="kg" min="0.0" useNominal="false"/>
+  </ScalarVariable>
+ </ModelVariables>
+</fmiModelDescription>
