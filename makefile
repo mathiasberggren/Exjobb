@@ -1,7 +1,7 @@
 CC=g++
 CCFLAGS=-Wall -Weffc++ -Wextra -Wpedantic -lwiringPi -lpthread
 HEADERS = ./include/*.h
-OBJ = ./main.o ./PID.cc ./q_learning.cc ./include/*.cc ./include/*.cpp
+OBJ = ./main.o ./include/*.cc ./include/*.cpp
 
 default: simulation
 

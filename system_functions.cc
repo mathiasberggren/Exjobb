@@ -20,10 +20,10 @@
 /* Raspberry I/O Pins */
 
 #include <wiringPi.h>
-#include "include/PID.h"
-#include "include/timer.h"
-#include "include/distance_sensor.h"
-#include "include/ADS1115.h"
+#include "./include/PID.h"
+#include "./include/timer.h"
+#include "./include/distance_sensor.h"
+#include "./include/ADS1115.h"
 
 
 bool angle_limit(int const& a)
