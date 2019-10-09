@@ -1,0 +1,16 @@
+
+Setpoint - Y = 0
+Success = angle deviates less then 0.3 degrees from 180
+
+PID: 11.9, 0, 1.26
+
+start angle = 5 * PI / 4
+time: 4.98
+
+
+start angle = 7 * PI / 6
+time: 2:47
+
+
+GJORDA:
+7 * PI / 6
