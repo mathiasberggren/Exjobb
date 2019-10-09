@@ -17,7 +17,7 @@ void PID::setOutputLimits(double min, double max)
     outMax = max;        
 }
 
-double PID::calculate(double error, double dt)
+double PID::calculate(double error)
 {
     // P Term
     //double Pout = kp * error;
@@ -35,8 +35,8 @@ double PID::calculate(double error, double dt)
        
 	//Possible change on derivative (error - olderror) / dt 
 	//Could do derivative on measurement instead to avoid spikes
-    double output = kp * error + ki * ITerm + kd * ((error - old_error) / dt);
-        
+    double output = kp * error + ki * ITerm - kd * ((error - old_error) / dt);
+    cout << "This is the output from the PID: " << output << endl; 
     if (output > outMax) 
         output = outMax; 
     else if (output < outMin)  

@@ -27,23 +27,23 @@ int run_PID()
 	bool PWM		{false};
 	/* INIT */
 	wiringPiSetup();
-    if(PWM)
-    {
-        softPwmCreate(MOTOR_PWM, 0, 100);
-	    //pinMode(MOTOR_PWM, PWM_OUTPUT);
-    }
-    else
-        pinMode(MOTOR_PWM, OUTPUT);
-    pinMode(MOTOR_OUT1, OUTPUT);
+  if(PWM)
+  {
+      softPwmCreate(MOTOR_PWM, 0, 100);
+    //pinMode(MOTOR_PWM, PWM_OUTPUT);
+  }
+  else
+  pinMode(MOTOR_PWM, OUTPUT);
+  pinMode(MOTOR_OUT1, OUTPUT);
 	pinMode(MOTOR_OUT2, OUTPUT);
 
-    digitalWrite(MOTOR_OUT1, 0);
-    digitalWrite(MOTOR_OUT2, 0);
+  digitalWrite(MOTOR_OUT1, 0);
+  digitalWrite(MOTOR_OUT2, 0);
 
-    Distance_sensor dist {}; //Default parameters pin 26, pin 27, 1ms dela* P, I, D, Min, Max */
-    ADS1115 adc {};
-    adc.setMode(ADS1115_MODE_SINGLESHOT);
-    adc.setRate(ADS1115_RATE_860);
+  Distance_sensor dist {}; //Default parameters pin 26, pin 27, 1ms dela* P, I, D, Min, Max */
+  ADS1115 adc {};
+  adc.setMode(ADS1115_MODE_SINGLESHOT);
+  adc.setRate(ADS1115_RATE_860);
 
 	PID lin { 0.1, 0.01, 0.05, -100, 100};
 	PID rot {5 , 0.0, 0.0, -100, 100};
@@ -110,9 +110,9 @@ int run_PID()
 		}
 		else
 		{
-			//serialClose(fd_arduino);
-	        digitalWrite(MOTOR_OUT1, 0);
-            digitalWrite(MOTOR_OUT2, 0);
+				//serialClose(fd_arduino);
+	      digitalWrite(MOTOR_OUT1, 0);
+				digitalWrite(MOTOR_OUT2, 0);
 		    throw std::domain_error("Reached the end of the world!");
 		}
 		//std::cout << "Current sampling time: " << std::fixed << t1.elapsed() << std::endl;

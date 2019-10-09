@@ -1,7 +1,6 @@
 #ifndef PID_CONTROLLER_H
 #define PID_CONTROLLER_H
 
-#include <chrono>
 
 class PID
 {
@@ -12,7 +11,7 @@ class PID
 
         void setOutputLimits(double, double); // Send in range for clamping
       //  void setSampleTime(double t) { dt = t; }; // Unit is milliseconds 
-        double calculate(double, double);
+        double calculate(double);
 
         double getKp()const { return kp; };
         double getKi()const { return ki; };
@@ -23,7 +22,7 @@ class PID
         
     private:
        
-//        double dt; // Loop interval time 
+        double dt {0.01}; // Loop interval time 
         double kp;
         double ki;
         double kd;
