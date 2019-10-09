@@ -1,0 +1,279 @@
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_FMU.o InvertedPendulum_FMU.c
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum.o InvertedPendulum.c
+In file included from InvertedPendulum.c:7:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+In file included from InvertedPendulum_FMU.c:9:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+In file included from InvertedPendulum_FMU.c:54:
+include/fmi2/fmu2_model_interface.c:73:11: warning: enumeration value 'modelSlaveInitialized' not handled in switch [-Wswitch]
+  switch (comp->state)
+          ^
+include/fmi2/fmu2_model_interface.c:162:16: warning: passing 'char **' to parameter of type 'const char **' discards qualifiers in nested pointer types [-Wincompatible-pointer-types-discards-qualifiers]
+  GC_vasprintf(&str, msg, args);
+               ^~~~
+include/util/modelica_string.h:71:31: note: passing argument to parameter 'strp' here
+int GC_vasprintf(const char **strp, const char *fmt, va_list ap);
+                              ^
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_functions.o InvertedPendulum_functions.c
+In file included from InvertedPendulum_functions.c:1:
+In file included from ./InvertedPendulum_functions.h:3:
+In file included from include/meta/meta_modelica.h:49:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_records.o InvertedPendulum_records.c
+In file included from InvertedPendulum_records.c:3:
+In file included from include/meta/meta_modelica.h:49:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_01exo.o InvertedPendulum_01exo.c
+In file included from InvertedPendulum_01exo.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_02nls.o InvertedPendulum_02nls.c
+In file included from InvertedPendulum_02nls.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+4 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_03lsy.o InvertedPendulum_03lsy.c
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_04set.o InvertedPendulum_04set.c
+In file included from InvertedPendulum_03lsy.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+In file included from InvertedPendulum_04set.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_05evt.o InvertedPendulum_05evt.c
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_06inz.o InvertedPendulum_06inz.c
+In file included from InvertedPendulum_05evt.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+In file included from InvertedPendulum_06inz.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_07dly.o InvertedPendulum_07dly.c
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_08bnd.o InvertedPendulum_08bnd.c
+In file included from InvertedPendulum_07dly.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+In file included from InvertedPendulum_08bnd.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_09alg.o InvertedPendulum_09alg.c
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_10asr.o InvertedPendulum_10asr.c
+In file included from InvertedPendulum_09alg.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+In file included from InvertedPendulum_10asr.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_11mix.o InvertedPendulum_11mix.c
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_12jac.o InvertedPendulum_12jac.c
+In file included from InvertedPendulum_11mix.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+In file included from InvertedPendulum_12jac.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_13opt.o InvertedPendulum_13opt.c
+In file included from InvertedPendulum_13opt.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_14lnz.o InvertedPendulum_14lnz.c
+In file included from InvertedPendulum_14lnz.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_15syn.o InvertedPendulum_15syn.c
+2 warnings generated.
+In file included from InvertedPendulum_15syn.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_16dae.o InvertedPendulum_16dae.c
+In file included from InvertedPendulum_16dae.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_17inl.o InvertedPendulum_17inl.c
+2 warnings generated.
+clang -Os -fPIC -mfpmath=sse  -DOMC_MINIMAL_RUNTIME=1 -DCMINPACK_NO_DLL=1 -Iinclude/ -Iinclude/fmi2 -I.    -DOMC_MODEL_PREFIX=InvertedPendulum -DOMC_NUM_MIXED_SYSTEMS=0 -DOMC_NUM_LINEAR_SYSTEMS=2 -DOMC_NUM_NONLINEAR_SYSTEMS=0 -DOMC_NDELAY_EXPRESSIONS=0 -DOMC_NVAR_STRING=0  -c -o InvertedPendulum_init_fmu.o InvertedPendulum_init_fmu.c
+In file included from InvertedPendulum_17inl.c:2:
+In file included from ./InvertedPendulum_model.h:5:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+In file included from InvertedPendulum_init_fmu.c:1:
+In file included from include/simulation_data.h:39:
+In file included from include/openmodelica.h:69:
+In file included from include/openmodelica_types.h:110:
+include/gc/omc_gc.h:217:28: warning: expression result unused [-Wunused-value]
+  GC_register_displacement(0);
+                           ^
+include/gc/omc_gc.h:221:34: warning: expression result unused [-Wunused-value]
+  GC_set_force_unmap_on_gcollect(1);
+                                 ^
+2 warnings generated.
+2 warnings generated.
+mkdir -p ../binaries/linux64
+clang -shared -o InvertedPendulum.so InvertedPendulum_FMU.o InvertedPendulum.o InvertedPendulum_functions.o InvertedPendulum_records.o InvertedPendulum_01exo.o InvertedPendulum_02nls.o InvertedPendulum_03lsy.o InvertedPendulum_04set.o InvertedPendulum_05evt.o InvertedPendulum_06inz.o InvertedPendulum_07dly.o InvertedPendulum_08bnd.o InvertedPendulum_09alg.o InvertedPendulum_10asr.o InvertedPendulum_11mix.o InvertedPendulum_12jac.o InvertedPendulum_13opt.o InvertedPendulum_14lnz.o InvertedPendulum_15syn.o InvertedPendulum_16dae.o InvertedPendulum_17inl.o InvertedPendulum_init_fmu.o  -L"/home/lapbottom/Programming/Exjobb/Models"   -L'/usr/lib/x86_64-linux-gnu/omc' -Wl,-rpath,'/usr/lib/x86_64-linux-gnu/omc'   -lSimulationRuntimeFMI  -llapack -lblas -lm -lm -lpthread -rdynamic -Wl,--no-undefined 
+cp InvertedPendulum.so InvertedPendulum_FMU.libs ../binaries/linux64/
+head -n20 Makefile > ../resources/linux64.summary
+make distclean
+make[1]: Entering directory '/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum/InvertedPendulum.fmutmp/sources'
+rm -f InvertedPendulum.def InvertedPendulum.o InvertedPendulum.a InvertedPendulum.so InvertedPendulum_FMU.o InvertedPendulum.o InvertedPendulum_functions.o InvertedPendulum_records.o InvertedPendulum_01exo.o InvertedPendulum_02nls.o InvertedPendulum_03lsy.o InvertedPendulum_04set.o InvertedPendulum_05evt.o InvertedPendulum_06inz.o InvertedPendulum_07dly.o InvertedPendulum_08bnd.o InvertedPendulum_09alg.o InvertedPendulum_10asr.o InvertedPendulum_11mix.o InvertedPendulum_12jac.o InvertedPendulum_13opt.o InvertedPendulum_14lnz.o InvertedPendulum_15syn.o InvertedPendulum_16dae.o InvertedPendulum_17inl.o InvertedPendulum_init_fmu.o 
+rm -f Makefile config.status config.log
+make[1]: Leaving directory '/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum/InvertedPendulum.fmutmp/sources'

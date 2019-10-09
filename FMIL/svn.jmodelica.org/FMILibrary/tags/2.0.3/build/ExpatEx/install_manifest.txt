@@ -1,0 +1,4 @@
+/home/lapbottom/Programming/Exjobb/FMIL/svn.jmodelica.org/FMILibrary/tags/2.0.3/build/ExpatEx/install/lib/libexpat.a
+/home/lapbottom/Programming/Exjobb/FMIL/svn.jmodelica.org/FMILibrary/tags/2.0.3/build/ExpatEx/install/include/expat.h
+/home/lapbottom/Programming/Exjobb/FMIL/svn.jmodelica.org/FMILibrary/tags/2.0.3/build/ExpatEx/install/include/expat_external.h
+/home/lapbottom/Programming/Exjobb/FMIL/svn.jmodelica.org/FMILibrary/tags/2.0.3/build/ExpatEx/install/lib/pkgconfig/expat.pc
