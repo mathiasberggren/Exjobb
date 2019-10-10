@@ -8,18 +8,19 @@ using std::vector;
 
 class Neuron;
 typedef vector<Neuron> Layer;
-typedef vector<std::pair<double, double>> Training_data;
+typedef vector<std::pair< double, double> > Training_data;
 
 class Net
 {
 	public:
 		Net(vector<unsigned int> const& topology);
-        void train_net(Training_data const&);
-		void forward(double const&);
-		void backpropagate(double const&);
+        void train(Training_data const&);
+		void forward(vector<double> const&);
+		void backpropagate(vector<double> const&);
         void set_weights(vector<double> const&);
         void get_weights(vector<double> &)const; 
 		void get_results(vector<double> &)const;
+        double get_recent_average_error() const { return recent_average_error; }
 	private:
 		vector<Layer> layers;
 		double error;

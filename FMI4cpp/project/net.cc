@@ -7,11 +7,11 @@
 using std::cout;
 using std::endl;
 
-double Neuron::eta   = 0.15; // Learning rate
-double Neuron::alpha = 0.5;  // Momentum, multiplier of last delta weight
+double Neuron::eta   = 0.05; // Learning rate
+double Neuron::alpha = 0.3;  // Momentum, multiplier of last delta weight
 
 Net::Net(vector<unsigned int> const& topology)
-    :layers{}
+    :layers{}, error {}, recent_average_error {}, smoothing_factor {}
 {
     /* Long to avoid type conversion */
     long unsigned int num_layers { topology.size()};
@@ -30,37 +30,43 @@ Net::Net(vector<unsigned int> const& topology)
     layers.back().back().set_output(1.0);
 }
 
-void Net::train_net(Training_data const& training_data)
+void Net::train(Training_data const& training_data)
 {
+    smoothing_factor = training_data.size();
     for(auto training_sample : training_data)
     {
-        forward(training_sample.first);
-        backpropagate(training_sample.second); 
+        vector<double> first { training_sample.first };
+        vector<double> second { training_sample.second };
+        forward(first);
+        backpropagate(second); 
     }
 
 }
 
-void Net::backpropagate(double const& gold)
+void Net::backpropagate(vector<double> const& gold)
 {
     Layer& output_layer { layers.back() };
-
-    error = 0.0;
+    error = 0;
 
     /* Get the sum of all output neurons */ 	
-    output_layer[0].get_output();	
-    double delta { gold - output_layer[0].get_output() };
-    error += delta * delta;
-
+    for(unsigned n {}; n < output_layer.size() - 1; ++n)
+    { 
+        double delta { gold[n] - output_layer[n].get_output() };
+        cout << "Gold = " << gold[n] << " Y-hat = " << output_layer[n].get_output() << endl; 
+        error += delta * delta;
+    }
     error /= output_layer.size() - 1; // Average squared error
     error = sqrt(error); // RMS (Root Mean Square)
-
+    
     recent_average_error = (recent_average_error * smoothing_factor + error) / smoothing_factor + 1.0;
-
+    cout << "The recent_average_error is: " << recent_average_error << " smoothing_factor: "  
+        << smoothing_factor << " the error is: " << error << endl;
     // Calculate gradients for output neurons
-    output_layer[0].calc_output_gradients(gold);
+    for(unsigned n {0}; n < output_layer.size() - 1; ++n)
+        output_layer[n].calc_output_gradients(gold[n]);
 
     // Calculate gradients on hidden layers	
-    for(long unsigned int layer_index {layers.size() - 2}; layer_index > 0; layer_index--)
+    for(long unsigned int layer_index {layers.size() - 2}; layer_index > 0; --layer_index)
     {
         Layer& hidden_layer { layers[layer_index] }; 	
         Layer& next_layer   { layers[layer_index + 1] };
@@ -71,27 +77,27 @@ void Net::backpropagate(double const& gold)
         } 
     }
 
-    for(long unsigned int layer_index {layers.size() - 1}; layer_index > 0; layer_index--)
+    for(long unsigned int layer_index {layers.size() - 1}; layer_index > 0; --layer_index)
     {
         Layer& layer { layers[layer_index] };
         Layer& previous_layer { layers[layer_index - 1] };
 
-        for(unsigned int i {}; i < layer.size() - 1; i++)
+        for(unsigned int i {}; i < layer.size() - 1; ++i)
         {
             layer[i].update_input_weights(previous_layer);
         }	
     } 
 }
 
-void Net::forward(double const& input)
+void Net::forward(vector<double> const& input)
 {
     // Assign the input values into the input neurons (layer 0)	
     /* CHANGE: loop over layers[0] iterators to increase performance */ 
-    // for(unsigned int i {}; i < input.size(); i++)
-    // {
-    // }	
-    layers[0][0].set_output(input);
-
+    for(unsigned int i {}; i < input.size(); i++)
+    {
+    	
+        layers[0][i].set_output(input[i]);
+    }
     // Forward through all layers
     for(unsigned int layer_index {1}; layer_index < layers.size(); layer_index++) 
     {
@@ -100,6 +106,11 @@ void Net::forward(double const& input)
         for(unsigned int i {}; i < layers[layer_index].size() - 1; i++)
             layers[layer_index][i].forward(prev_layer);
     }
+
+    Layer& output_layer { layers.back() };
+
+    for(int i {}; i < output_layer.size() - 1; i++)
+        cout << "This is the output from neuron " << i << " :  " << output_layer[i].get_output() << endl;
 }
 
 void Net::get_results(vector<double> & result)const
@@ -143,7 +154,7 @@ void Net::set_weights(vector<double> const& w)
 }
 
 Neuron::Neuron(unsigned int outputs, unsigned int index)
-    : output_weights{}, my_index {index} 
+    : output_value {}, output_weights{},  my_index {index}, gradient {} 
 {
     for(unsigned int i {}; i < outputs; i++)
         output_weights.push_back(Connection());
@@ -160,8 +171,17 @@ void Neuron::forward(Layer const& prev_layer)
             prev_layer[i].output_weights[my_index].weight;
     }
 
-    /* CHANGE: Make it possible to change transfer function depending on function call */
-    output_value = Neuron::transfer_function(sum);
+    /* CHANGE: Make it possible to change transfer function
+     * depending on function call, this would make it possible
+     * to have a differenttransfer function for the output neuron(s)
+     *  */
+    cout << "This is my index : " << my_index << " doing forward, " 
+        << "the previous layer has size: " << prev_layer.size() 
+        << " and the sum is " << sum << endl; 
+    if(prev_layer.size() == 11) 
+        output_value = sum; 
+    else   
+        output_value = Neuron::transfer_function(sum);
 }
 
 void Neuron::calc_output_gradients(double gold)
@@ -205,20 +225,20 @@ double Neuron::sumDOW(Layer const& next_layer)const
 double Neuron::transfer_function(double input)
 {
     // RELU
-    return std::max(input, 0.0);
+    // return std::max(input, 0.0);
     // TANH
-    // return tanh(input);
+    return tanh(input);
 }
 
 double Neuron::transfer_function_derivative(double input)
 {
     // RELU
-    double ret_val {};
-    if(input > 0)
-        ret_val = 1;
-
-    return ret_val;
+    // double ret_val {};
+    // if(input > 0)
+        // ret_val = 1;
+// 
+    // return ret_val;
 
     // tanh() 
-    // return 1 - input * input;
+    return 1 - input * input;
 }
