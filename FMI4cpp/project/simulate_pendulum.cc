@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -11,12 +10,17 @@
 #include <random>
 
 #include <fmi4cpp/fmi4cpp.hpp>
+// #include <shark/Data/Csv.h>
+// #include <shark/Algorithms/GradientDescent/CG.h>
+// #include <shark/ObjectiveFunctions/ErrorFunction.h>
+// #include <shark/ObjectiveFunctions/Loss/SquaredLoss.h>
+// #include <shark/Models/LinearModel.h>
 
 #include "matplotlibcpp.h"
 #include "PID.h"
-#include "net.h"
+#include "./ML-models/net.h"
+#include "./ML-models/linear_model.h"
 
-// using namespace std;
 using std::cout;
 using std::cin;
 using std::endl;
@@ -26,17 +30,23 @@ using std::string;
 using std::pair;
 using namespace fmi4cpp;
 using namespace fmi4cpp::solver;
+
 namespace plt = matplotlibcpp;
 
-typedef vector< pair< double, double> > Training_data;
+/* 0 = PID, 1 = NN, 2 == Linear Regression */ 
+#define CONTROLLER_MODE 2
+#define TRAINING_MODE 1
+typedef vector< pair<vector<double>, double> > Training_data;
 
 const double PI {3.14159265359};
 const double stop	   {10};
 const double stepSize {1E-3};
 const string fmuPath = "/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum/InvertedPendulum.fmu";
 
-double variance(std::vector<double> const&);
 void read_from_file(vector<string> const& files, Training_data & training_data);
+void write_to_files(vector<string> const& files, Training_data const& training_data);
+// RegressionDataset loadData(const std::string& dataFile,const std::string& labelFile);
+double variance(std::vector<double> const&);
 
 int main()
 {
@@ -60,67 +70,134 @@ int main()
                                      md->get_variable_by_name("Y").value_reference};
 
     auto input_force = md->get_variable_by_name("F").value_reference;
+    vector<unsigned> topology {2, 25, 1};
     PID pid {11.9, 0, 1.26, std::numeric_limits<int>::max()}; 
-    vector<unsigned> topology {1, 10, 1};
-    Net nn(topology);
-    vector<string> files {  "neural_training_data23.txt", "neural_training_data34.txt",
-                            "neural_training_data43.txt", "neural_training_data54.txt",
-                            "neural_training_data56.txt", "neural_training_data76.txt" }; 
 
-    Training_data training_data {};
+    #if TRAINING_MODE
+        Net nn(topology);
+        vector<string> gather_files {  "neural_training_data23.txt", "neural_training_data34.txt",
+                                "neural_training_data43.txt", "neural_training_data54.txt",
+                                "neural_training_data56.txt", "neural_training_data76.txt" }; 
 
-    read_from_file(files, training_data);
+        Training_data training_data {};
+        read_from_file(gather_files, training_data);
+        if(0)
+        {
+            vector<string> output_files { "input.csv", "gold_data.csv" };
+            write_to_files(output_files, training_data);
+            slave -> terminate();
+            return 0;
+        }
+
+        std::random_device rd;
+        std::mt19937 g(rd());
+        std::shuffle(training_data.begin(), training_data.end(), g);
+        /* ***************** */
+
+        cout << "This is the current number of training points that we got in our vector: " \
+                << training_data.size() << endl;
+
+        // Get the indexes for how to split the data into test / validation / training
+        Training_data::const_iterator start { training_data.begin()};
+        Training_data::const_iterator train_index_end \
+            {training_data.begin() + (int)(training_data.size() * 0.5)};
+        Training_data::const_iterator validation_index_end \
+            {train_index_end  + (int)(training_data.size() * 0.25)};
+        Training_data::const_iterator test_end\
+             {training_data.end() - 1};
+
+        Training_data train_data { start, train_index_end};
+        Training_data val_data   { train_index_end + 1, validation_index_end};    
+        Training_data test_data  { validation_index_end + 1, test_end};
+
+        #if CONTROLLER_MODE == 1
+            cout << train_data.size() << " " << val_data.size() << " " << test_data.size() << endl;
+            cout << "Train_index: 0-" << train_index_end - training_data.begin() 
+                    << "\nVal index: " << train_index_end + 1 -training_data.begin() << "-" 
+                    << validation_index_end - training_data.begin() << "\nTest index: " 
+                    << validation_index_end + 1 - training_data.begin() << "-" << training_data.size() - 1
+                    << endl; 
+            for(int i {}; i < 100; i++)
+            {
+                nn.train(training_data);
+                double val_error { nn.validate(training_data) };
+                cout << "This is the average error after " << i+1 << " epoch: " << nn.get_recent_average_error() 
+                        << " and this is the validation error: " << val_error << endl;
+                if(val_error < 0.002)
+                    break; 
+            } 
+            
+            nn.dump_to_file("temp_nn.txt");  
+            Net nn_2 { topology };
+            nn_2.get_from_file("temp_nn.txt");
+            cout << "This is the validation error for the nn2 network: " << nn_2.validate(training_data) << endl;
+            slave -> terminate();
+            return 0;
+        #elif CONTROLLER_MODE == 2
+            double k {1}; 
+            while(k++ < 20)
+            {
+                for(int i {1}; i < 20; i++)
+                {
+                    LinearModel l_model {1/k};
+                    l_model.fit(train_data, i);
+                    cout << "This is the loss for the linear_regression_model learning rate " \
+                        << 1/k << "one epoch: " << i << " is: " << l_model.loss(val_data) << endl;
+                }
+            }
+            slave -> terminate();
+            return 0;
+        #elif CONTROLLER_MODE == 3
+            slave -> terminate();
+            return 0;
+        #endif
+    #elif !TRAINING_MODE
+        #if CONTROLLER_MODE == 1 
+            Net nn_2 { topology };
+            nn_2.get_from_file("temp_nn.txt");
+        #elif CONTROLLER_MODE == 2 
+            LinearModel line {};
+            line.import("linear_regression_model.txt");
+        #elif CONTROLLER_MODE == 3
+            
+        #endif
+    #endif
+
+    // Controller = Linear regression 
 
 
-    // for(auto container : training_data)
-    // {
-        // for(auto datapoint : container.first)
-            // cout << "The datapoint is: " << datapoint << endl; 
-    // }
-    // Mix the data 
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(training_data.begin(), training_data.end(), g);
-    /* ***************** */
+        // SHARK STUFF 
 
-    cout << "This is the current number of training points that we got in our vector: " \
-            << training_data.size() << endl;
-
-    // Get the indexes for how to split the data into test / validation / training
-    Training_data::const_iterator start { training_data.begin()};
-    Training_data::const_iterator train_index_end \
-        {training_data.begin() + (int)(training_data.size() * 0.5)};
-    Training_data::const_iterator validation_index_end \
-        {train_index_end  + (int)(training_data.size() * 0.25)};
-    Training_data::const_iterator test_end\
-         {training_data.end() - 1};
-
-    Training_data train_data { start, train_index_end};
-    Training_data val_data   { train_index_end + 1, validation_index_end};    
-    Training_data test_data  { validation_index_end + 1, test_end};
-
-
-    cout << train_data.size() << " " << val_data.size() << " " << test_data.size() << endl;
-    cout << "Train_index: 0-" << train_index_end - training_data.begin() 
-            << "\nVal index: " << train_index_end + 1 -training_data.begin() << "-" 
-            << validation_index_end - training_data.begin() << "\nTest index: " 
-            << validation_index_end + 1 - training_data.begin() << "-" << training_data.size() - 1
-            << endl; 
-
-    nn.train(train_data);
-    cout << "This is the average error after 1 epoch: " << nn.get_recent_average_error() << endl;
-    nn.train(train_data);
-    cout << "This is the average error after 2 epochs: " << nn.get_recent_average_error() << endl;
-    nn.train(train_data);
-    cout << "This is the average error after 3 epoch: " << nn.get_recent_average_error() << endl;
-    nn.train(train_data);
-    cout << "This is the average error after 4 epochs: " << nn.get_recent_average_error() << endl;
-    slave -> terminate();
-    return 0;
+	    // RegressionDataset data = loadData("./input.csv","./gold_data.csv");
+	    // RegressionDataset test = splitAtElement(data,static_cast<std::size_t>(0.8*data.numberOfElements()));
+// 
+	    // LinearModel<> model(inputDimension(data), labelDimension(data));
+	    // SquaredLoss<> loss;
+	    // ErrorFunction<> errorFunction(data, &model,&loss);
+	    // CG<> optimizer;
+	    // errorFunction.init();
+	    // optimizer.init(errorFunction);
+	    // for(int i = 0; i != 100; ++i)
+	    // {
+		    // optimizer.step(errorFunction);
+	    // }
+// 
+	    // model.setParameterVector(optimizer.solution().point);
+	    // double trainingError = optimizer.solution().value;
+	    // Data<RealVector> predictions = model(test.inputs());
+	    // double testError = loss.eval(test.labels(),predictions);
+	    // cout << "RESULTS: " << endl;
+	    // cout << "======== \n" << endl;
+	    // cout << "training error " << trainingError << endl;
+	    // cout << "test error: " << testError << endl;
+        //
     // validation_index_end - train_index_end 
+    
+
     vector<double> angle_value	   {};
-    vector<double> pid_input_value {}; 
-    vector<double> pid_output_value {};
+    vector<double> angle_velo	   {};
+    vector<double> controller_input_value {}; 
+    vector<double> controller_output_value {};
     vector<double> plot_time       {};
     double t = 0;
     double force {};
@@ -129,21 +206,40 @@ int main()
         /* Read variables from simulation */ 
         if (!slave->step(stepSize)) { break; }
         if (!slave->read_real(vr, ref)) { break; }
-
-        // Avoid spike for D-term in PID when old_error does not exist
-        int rounded_t = t * 1000;
-        if(rounded_t == 0) 
-        { 
-            pid.set_old_error(PI-ref[4]);
-        }
-
-        double pid_output {pid.calculate(PI-ref[4])};
-        slave -> read_real(input_force, force);
-        slave -> write_real(input_force, pid_output);
-        angle_value.push_back(ref[4]);
-        pid_output_value.push_back(pid_output);
-        pid_input_value.push_back(PI - ref[4]);
         
+        double controller_output {};
+        #if CONTROLLER_MODE == 0
+            // Avoid spike for D-term in PID when old_error does not exist
+            int rounded_t = t * 1000;
+            if(rounded_t == 0) 
+            { 
+                pid.set_old_error(PI-ref[4]);
+            }
+            controller_output = pid.calculate(PI-ref[4]);
+        #elif CONTROLLER_MODE == 1
+            vector<double> nn_input { PI - ref[4], ref[1] };
+            controller_output = nn_2.forward(nn_input);
+        #elif CONTROLLER_MODE == 2
+            // RealVector model_input (PI - ref[4], ref[1]);
+            // vector<RealVector> points (v);
+            // std::vector<RealVector> points (PI - ref[4], ref[1]);
+            // Data<RealVector> model_input = createDataFromRange(points);
+            // auto controller_output_lr = model(model_input);
+            // cout << "Before making model prediction. The dimension for the input is: " << inputDimension(data) << " and the label dimension is: " << labelDimension(data) << endl;
+	        // RealVector predictions = model(model_input);
+            // cout << "After making model prediction." << endl;
+            // controller_output = model(model_input)[0];
+        #elif CONTROLLER_MODE == 3 
+        
+        #endif
+        // slave -> read_real(input_force, force);
+        slave -> write_real(input_force, controller_output);
+        slave -> write_real(input_force, controller_output);
+
+        controller_output_value.push_back(controller_output);
+        controller_input_value.push_back(PI - ref[4]);
+        angle_value.push_back(ref[4]);
+        angle_velo.push_back(ref[1]); 
         // set_point_value.push_back(PI - ref[4]);
         plot_time.push_back(double {t});
 
@@ -154,22 +250,36 @@ int main()
                 << (float)force << "Setpoint - Y: " << setw(10) << PI - ref[4] << endl;
 
     }
-     
-    std::ofstream myfile {"./neural_training_data23.txt"};
-
-    for(size_t i {}; i < pid_input_value.size(); i++)
+    #if CONTROLLER_MODE == 0 
+        std::ofstream myfile {"./L1.0M1.0m1.5/PID_result_1_2.txt"};
+    #elif CONTROLLER_MODE == 1
+        std::ofstream myfile {"./L1.0M1.0m1.5/NN_result_1_2.txt"};
+    #elif CONTROLLER_MODE == 2
+        std::ofstream myfile {"./L1.0M1.0m1.5/LR_result_1_2.txt"};
+    #elif CONTROLLER_MODE == 3
+        std::ofstream myfile {"./L1.0M1.0m1.5/TREE_result_1_2.txt"};
+    #endif
+    for(size_t i {}; i < controller_input_value.size(); i++)
     {
-        myfile << plot_time[i] << " " << angle_value[i] << " " <<  pid_input_value[i] \
-                << " " << pid_output_value[i] << endl;
+        myfile << plot_time[i] << " " << angle_value[i] << " " << angle_velo[i] 
+            << " " <<  controller_input_value[i] << " " << controller_output_value[i] << endl;
     } 
-     
     myfile.close();
      
     plt::figure_size(1200, 780);
     plt::plot(plot_time, angle_value);
     plt::ylim(1, 5);
     plt::title("Value of angle (rad)");	
-    string filename = "./PID_IMG/pid23.png";	
+
+    #if CONTROLLER_MODE == 0 
+        string filename = "./L1.0M1.0m1.5/PID_IMG/1_2.png";	
+    #elif CONTROLLER_MODE == 1
+        string filename = "./L1.0M1.0m1.5/NN_IMG/1_2.png";	
+    #elif CONTROLLER_MODE == 2
+        string filename = "./L1.0M1.0m1.5/LR/1_2.png";
+    #elif CONTROLLER_MODE == 3
+        string filename = "./L1.0M1.0m1.5/TREE/1_2.png";
+    #endif
     cout << "Saving result to " << filename << endl;
     plt::save(filename);
 
@@ -184,6 +294,7 @@ void read_from_file(vector<string> const& files, Training_data & training_data)
     double gold;
     double time;
     double angle;
+    double angle_velo;
     for(auto file_name : files)
     {
         std::ifstream file {file_name};
@@ -191,20 +302,76 @@ void read_from_file(vector<string> const& files, Training_data & training_data)
         while(getline(file, file_row))
         {
             std::stringstream ss {file_row};
-            ss >> time >> angle >> input >> gold;
+            ss >> time >> angle >> angle_velo >> input >> gold;
             /* Avoid too much training data for when pendulum have stabilized */ 
+            vector<double> input_vec { input, angle_velo}; 
             if(time < 4.5)
-                training_data.push_back(pair<double, double>(input, gold) );
-            // cout << time << " " << angle << " " << input << " " << gold << endl;
+                training_data.push_back(pair<vector<double>, double>(input_vec, gold) );
+            // cout << time << " " << angle << " " << angle_velo << " " << input << " " << gold << endl;
         }
         cout << "Processed file: " << file_name << " and got " << training_data.size() 
                 << " training data points!" << endl;
     }
 }
+
+void write_to_files(vector<string> const& files, Training_data const& training_data)
+{
+    for(auto file_name : files)
+    {
+        std::ofstream file {file_name};
+        for(auto it : training_data)
+        {
+            // First file equals input file
+            if(file_name == files[0])
+            {
+                std::stringstream ss {};
+                for(auto input {begin(it.first)}; input != end(it.first); input++)
+                {
+                    if(input + 1 != end(it.first))
+                        ss << *input << ","; 
+                    else
+                        ss << *input << "\n"; 
+                }
+                file << ss.str(); 
+            } 
+            else if(file_name == files[1])
+            {
+                std::stringstream ss {};
+                ss << it.second << "\n";
+                file << ss.str();
+            }
+            else
+            { 
+                std::cerr << "This was not good, you sent more than input and output\
+                    file into write_to_files function. Try again. " << endl;
+            }
+        }
+    }
+    cout << "Finished writing to files." << endl;
+}
+
+// RegressionDataset loadData(const std::string& dataFile,const std::string& labelFile)
+// {
+	// //we first load two separate data files for the training inputs and the labels of the data point
+	// Data<RealVector> inputs;
+	// Data<RealVector> labels;
+	// try {
+		// importCSV(labels, labelFile, ' ');
+        // cout << "First one went fine." << endl;
+		// importCSV(inputs, dataFile, ',');
+	// } catch (...) {
+        // std::cerr << "Unable to open file " <<  dataFile << " and/or " << labelFile << ". Check paths!" << endl;
+		// exit(EXIT_FAILURE);
+	// }
+	// //now we create a complete dataset which represents pairs of inputs and labels
+	// RegressionDataset data(inputs, labels);
+	// return data;
+// }
+
 double variance(std::vector<double> const& samples)
 {
 	size_t n {samples.size()};
-	double mean = std::accumulate(samples.begin(), samples.end(), 0.0)/samples.size();
+	double mean = std::accumulate(samples.begin(), samples.end(), 0.0) / n;
 
 	auto variance_func = [&mean, &n](double accumulator,const double& val)
 	{
