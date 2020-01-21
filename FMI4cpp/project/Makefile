@@ -8,28 +8,42 @@ LIBS=-lfmi4cpp -ldl -lstdc++fs -lzip -lpython2.7 -lboost_serialization -lgomp
 # lshark
 IDIR=$(_IDIR:%=-I%)
 LDIR=$(_LDIR:%=-L%)
-#IDIR_OPTIONAL = $(addprefix -I,$(_IDIR))
-#LDIR_OPTIONAL = $(addprefix -L,$(_LDIR))
 
-ML_DIR=./ML-models/
+# Constants 
+START_ANGLE ?=3.14
+# 0 = PID, 1 = NN, 2 = Linear, 3 = Tree
+CONTROLLER_MODE ?=0
+# 0 = Off, 1 = On
+TRAINING_MODE ?=0
+
+DEFINED_CONSTS=-DTRAINING_MODE=$(TRAINING_MODE) -DCONTROLLER_MODE=$(CONTROLLER_MODE)
+SUFFIX=-$(START_ANGLE)-$(CONTROLLER_MODE)-$(TRAINING_MODE)
+
 _ML_H=linear_model.h r_tree.h net.h
 _ML_O=linear_model.o r_tree.o net.o
 
+
+ML_DIR=./ML-models/
 ML_H=$(_ML_H:%=$(ML_DIR)%)
 ML_O=$(_ML_O:%=$(ML_DIR)%)
 
+
+
 CC=g++
-CCFLAGS=-std=c++17 -Wall -Weffc++ -Wextra -pedantic
-HEADERS = PID.h $(ML_H) 
-OBJ = simulate_pendulum.o PID.o $(ML_O)
+CCFLAGS=-std=c++17 -Wall -Weffc++ -Wextra -pedantic 
+HEADERS:=PID.h $(ML_H) 
+OBJ:=simulate_pendulum.o PID.o $(ML_O)
+OUT:=simulate_pendulum$(SUFFIX)
+
+all: $(OUT)
 
 %.o: %.cc $(HEADERS)
-	$(CC) -c -o $@ $< $(IDIR) $(LDIR) $(CCFLAGS)
+	$(CC) -c -o $@ $< $(IDIR) $(LDIR) $(CCFLAGS) $(DEFINED_CONSTS)
 
-simulate_pendulum: $(OBJ) 
-	$(CC) $^ -o $@ $(IDIR) $(LDIR) $(LIBS) $(CCFLAGS)
+$(OUT): $(OBJ) 
+	$(CC) $^ -o $@ $(IDIR) $(LDIR) $(LIBS) $(CCFLAGS) 
 
 .PHONY:	clean
 
 clean:
-	rm -f ./*.o ./simulate_pendulum $(ML_DIR)*.o
+	rm -f ./*.o ./simulate_pendulum-* $(ML_DIR)*.o

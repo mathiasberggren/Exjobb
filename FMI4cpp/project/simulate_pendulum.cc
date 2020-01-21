@@ -34,8 +34,8 @@ using namespace fmi4cpp::solver;
 namespace plt = matplotlibcpp;
 
 /* 0 = PID, 1 = NN, 2 == Linear Regression */ 
-#define CONTROLLER_MODE 2
-#define TRAINING_MODE 1
+// #define CONTROLLER_MODE 2
+// #define TRAINING_MODE 1
 typedef vector< pair<vector<double>, double> > Training_data;
 
 const double PI {3.14159265359};
@@ -50,6 +50,9 @@ double variance(std::vector<double> const&);
 
 int main()
 {
+    cout << "The Controller Mode is: " << CONTROLLER_MODE << endl;
+    return 0;
+
 	/* Model initialization */ 
     fmi2::fmu fmu(fmuPath);
     auto cs_fmu = fmu.as_cs_fmu();
@@ -257,7 +260,9 @@ int main()
     #elif CONTROLLER_MODE == 2
         std::ofstream myfile {"./L1.0M1.0m1.5/LR_result_1_2.txt"};
     #elif CONTROLLER_MODE == 3
-        std::ofstream myfile {"./L1.0M1.0m1.5/TREE_result_1_2.txt"};
+        std::ofstream myfile {"./l1.0m1.0m1.5/tree_result_1_2.txt"};
+    #elif CONTROLLER_MODE == 4
+        std::ofstream myfile {"./l1.0m1.0m1.5/tree_result_1_2.txt"};
     #endif
     for(size_t i {}; i < controller_input_value.size(); i++)
     {
@@ -278,6 +283,8 @@ int main()
     #elif CONTROLLER_MODE == 2
         string filename = "./L1.0M1.0m1.5/LR/1_2.png";
     #elif CONTROLLER_MODE == 3
+        string filename = "./L1.0M1.0m1.5/TREE/1_2.png";
+    #elif CONTROLLER_MODE == 4
         string filename = "./L1.0M1.0m1.5/TREE/1_2.png";
     #endif
     cout << "Saving result to " << filename << endl;
