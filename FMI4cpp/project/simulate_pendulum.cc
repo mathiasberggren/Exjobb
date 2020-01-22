@@ -36,10 +36,9 @@ namespace plt = matplotlibcpp;
 /* 0 = PID, 1 = NN, 2 == Linear Regression */ 
 // #define CONTROLLER_MODE 2
 // #define TRAINING_MODE 1
-#define FILE_NAME "HEJ"
 #define TO_STR2(x) #x
 #define TO_STR(x) TO_STR2(x)
-#define VERSION_STRING (TO_STR(FILENAME))
+#define FILE_NAME (TO_STR(FILENAME))
 #define PENDULUM_VERSION (TO_STR(DIRECTORY))
 
 typedef vector< pair<vector<double>, double> > Training_data;
@@ -56,8 +55,8 @@ double variance(std::vector<double> const&);
 
 int main()
 {
-    cout << "\n\nThe Controller Mode is: " << CONTROLLER_MODE << " and the filename is: " << VERSION_STRING << " and the directory is: " << PENDULUM_VERSION << endl;
-    return 0;
+    cout << "\n\nThe Controller Mode is: " << CONTROLLER_MODE << " and the filename is: " << FILE_NAME << " and the directory is: " << PENDULUM_VERSION << endl;
+    // return 0;
 
 	/* Model initialization */ 
     fmi2::fmu fmu(fmuPath);
@@ -252,24 +251,19 @@ int main()
         // set_point_value.push_back(PI - ref[4]);
         plot_time.push_back(double {t});
 
-        cout << std::setprecision(2) << std::fixed << std::left << setw(5) << "Time: " << setw(10) << t << "Theta = " 
-                << setw(10) << (float)ref[0] * 180 / PI << "Theta velo: " << setw(10) << (float)ref[1]  
-                << "x_pos: " << setw(10) << (float)ref[2] <<  "x_vel: " << setw(10) 
-                << (float)ref[3] << "Y: " << setw(10) << (float)ref[4] << "F: " << setw(10) 
-                << (float)force << "Setpoint - Y: " << setw(10) << PI - ref[4] << endl;
+        // cout << std::setprecision(2) << std::fixed << std::left << setw(5) << "Time: " << setw(10) << t << "Theta = " 
+                // << setw(10) << (float)ref[0] * 180 / PI << "Theta velo: " << setw(10) << (float)ref[1]  
+                // << "x_pos: " << setw(10) << (float)ref[2] <<  "x_vel: " << setw(10) 
+                // << (float)ref[3] << "Y: " << setw(10) << (float)ref[4] << "F: " << setw(10) 
+                // << (float)force << "Setpoint - Y: " << setw(10) << PI - ref[4] << endl;
 
     }
-    #if CONTROLLER_MODE == 0 
-        std::ofstream myfile {"./L1.0M1.0m1.5/PID_result_1_2.txt"};
-    #elif CONTROLLER_MODE == 1
-        std::ofstream myfile {"./L1.0M1.0m1.5/NN_result_1_2.txt"};
-    #elif CONTROLLER_MODE == 2
-        std::ofstream myfile {"./L1.0M1.0m1.5/LR_result_1_2.txt"};
-    #elif CONTROLLER_MODE == 3
-        std::ofstream myfile {"./l1.0m1.0m1.5/tree_result_1_2.txt"};
-    #elif CONTROLLER_MODE == 4
-        std::ofstream myfile {"./l1.0m1.0m1.5/tree_result_1_2.txt"};
-    #endif
+    
+    std::stringstream ss {};
+    ss << "./" << PENDULUM_VERSION << "/" << FILE_NAME;
+    string file_specifics { ss.str()};
+    std::ofstream myfile { file_specifics + ".txt"};
+
     for(size_t i {}; i < controller_input_value.size(); i++)
     {
         myfile << plot_time[i] << " " << angle_value[i] << " " << angle_velo[i] 
@@ -282,17 +276,8 @@ int main()
     plt::ylim(1, 5);
     plt::title("Value of angle (rad)");	
 
-    #if CONTROLLER_MODE == 0 
-        string filename = "./L1.0M1.0m1.5/PID_IMG/1_2.png";	
-    #elif CONTROLLER_MODE == 1
-        string filename = "./L1.0M1.0m1.5/NN_IMG/1_2.png";	
-    #elif CONTROLLER_MODE == 2
-        string filename = "./L1.0M1.0m1.5/LR/1_2.png";
-    #elif CONTROLLER_MODE == 3
-        string filename = "./L1.0M1.0m1.5/TREE/1_2.png";
-    #elif CONTROLLER_MODE == 4
-        string filename = "./L1.0M1.0m1.5/TREE/1_2.png";
-    #endif
+    string filename {file_specifics + ".png" };
+
     cout << "Saving result to " << filename << endl;
     plt::save(filename);
 
