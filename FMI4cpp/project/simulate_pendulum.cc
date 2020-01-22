@@ -10,11 +10,6 @@
 #include <random>
 
 #include <fmi4cpp/fmi4cpp.hpp>
-// #include <shark/Data/Csv.h>
-// #include <shark/Algorithms/GradientDescent/CG.h>
-// #include <shark/ObjectiveFunctions/ErrorFunction.h>
-// #include <shark/ObjectiveFunctions/Loss/SquaredLoss.h>
-// #include <shark/Models/LinearModel.h>
 
 #include "matplotlibcpp.h"
 #include "PID.h"
@@ -33,9 +28,7 @@ using namespace fmi4cpp::solver;
 
 namespace plt = matplotlibcpp;
 
-/* 0 = PID, 1 = NN, 2 == Linear Regression */ 
-// #define CONTROLLER_MODE 2
-// #define TRAINING_MODE 1
+/* Macros FILENAME and DIRECTORY is defined when doing make */ 
 #define TO_STR2(x) #x
 #define TO_STR(x) TO_STR2(x)
 #define FILE_NAME (TO_STR(FILENAME))
@@ -50,13 +43,11 @@ const string fmuPath = "/home/lapbottom/Programming/Exjobb/Models/InvertedPendul
 
 void read_from_file(vector<string> const& files, Training_data & training_data);
 void write_to_files(vector<string> const& files, Training_data const& training_data);
-// RegressionDataset loadData(const std::string& dataFile,const std::string& labelFile);
 double variance(std::vector<double> const&);
 
 int main()
 {
-    cout << "\n\nThe Controller Mode is: " << CONTROLLER_MODE << " and the filename is: " << FILE_NAME << " and the directory is: " << PENDULUM_VERSION << endl;
-    // return 0;
+    cout << "\n\nThe Controller Mode is: " << CONTROLLER_MODE << " [Training mode: " << TRAINING_MODE << "]" << " and the filename is: " << FILE_NAME << " and the directory is: " << PENDULUM_VERSION << endl;
 
 	/* Model initialization */ 
     fmi2::fmu fmu(fmuPath);
@@ -81,9 +72,9 @@ int main()
     vector<unsigned> topology {2, 25, 1};
     PID pid {11.9, 0, 1.26, std::numeric_limits<int>::max()}; 
 
-    #if TRAINING_MODE
+    #if TRAINING_MODE == 1
         Net nn(topology);
-        vector<string> gather_files {  "neural_training_data23.txt", "neural_training_data34.txt",
+        vector<string> gather_files {"neural_training_data23.txt", "neural_training_data34.txt",
                                 "neural_training_data43.txt", "neural_training_data54.txt",
                                 "neural_training_data56.txt", "neural_training_data76.txt" }; 
 
@@ -119,12 +110,6 @@ int main()
         Training_data test_data  { validation_index_end + 1, test_end};
 
         #if CONTROLLER_MODE == 1
-            cout << train_data.size() << " " << val_data.size() << " " << test_data.size() << endl;
-            cout << "Train_index: 0-" << train_index_end - training_data.begin() 
-                    << "\nVal index: " << train_index_end + 1 -training_data.begin() << "-" 
-                    << validation_index_end - training_data.begin() << "\nTest index: " 
-                    << validation_index_end + 1 - training_data.begin() << "-" << training_data.size() - 1
-                    << endl; 
             for(int i {}; i < 100; i++)
             {
                 nn.train(training_data);
@@ -162,45 +147,15 @@ int main()
     #elif !TRAINING_MODE
         #if CONTROLLER_MODE == 1 
             Net nn_2 { topology };
-            nn_2.get_from_file("temp_nn.txt");
+            nn_2.get_from_file("ML-models/saved_models/temp_nn.txt");
         #elif CONTROLLER_MODE == 2 
             LinearModel line {};
             line.import("linear_regression_model.txt");
         #elif CONTROLLER_MODE == 3
+            // Import some tree stuff
             
         #endif
     #endif
-
-    // Controller = Linear regression 
-
-
-        // SHARK STUFF 
-
-	    // RegressionDataset data = loadData("./input.csv","./gold_data.csv");
-	    // RegressionDataset test = splitAtElement(data,static_cast<std::size_t>(0.8*data.numberOfElements()));
-// 
-	    // LinearModel<> model(inputDimension(data), labelDimension(data));
-	    // SquaredLoss<> loss;
-	    // ErrorFunction<> errorFunction(data, &model,&loss);
-	    // CG<> optimizer;
-	    // errorFunction.init();
-	    // optimizer.init(errorFunction);
-	    // for(int i = 0; i != 100; ++i)
-	    // {
-		    // optimizer.step(errorFunction);
-	    // }
-// 
-	    // model.setParameterVector(optimizer.solution().point);
-	    // double trainingError = optimizer.solution().value;
-	    // Data<RealVector> predictions = model(test.inputs());
-	    // double testError = loss.eval(test.labels(),predictions);
-	    // cout << "RESULTS: " << endl;
-	    // cout << "======== \n" << endl;
-	    // cout << "training error " << trainingError << endl;
-	    // cout << "test error: " << testError << endl;
-        //
-    // validation_index_end - train_index_end 
-    
 
     vector<double> angle_value	   {};
     vector<double> angle_velo	   {};
@@ -228,15 +183,7 @@ int main()
             vector<double> nn_input { PI - ref[4], ref[1] };
             controller_output = nn_2.forward(nn_input);
         #elif CONTROLLER_MODE == 2
-            // RealVector model_input (PI - ref[4], ref[1]);
-            // vector<RealVector> points (v);
-            // std::vector<RealVector> points (PI - ref[4], ref[1]);
-            // Data<RealVector> model_input = createDataFromRange(points);
-            // auto controller_output_lr = model(model_input);
-            // cout << "Before making model prediction. The dimension for the input is: " << inputDimension(data) << " and the label dimension is: " << labelDimension(data) << endl;
-	        // RealVector predictions = model(model_input);
-            // cout << "After making model prediction." << endl;
-            // controller_output = model(model_input)[0];
+
         #elif CONTROLLER_MODE == 3 
         
         #endif
@@ -260,7 +207,7 @@ int main()
     }
     
     std::stringstream ss {};
-    ss << "./" << PENDULUM_VERSION << "/" << FILE_NAME;
+    ss << PENDULUM_VERSION << "/" << FILE_NAME;
     string file_specifics { ss.str()};
     std::ofstream myfile { file_specifics + ".txt"};
 
