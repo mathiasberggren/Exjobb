@@ -36,6 +36,12 @@ namespace plt = matplotlibcpp;
 /* 0 = PID, 1 = NN, 2 == Linear Regression */ 
 // #define CONTROLLER_MODE 2
 // #define TRAINING_MODE 1
+#define FILE_NAME "HEJ"
+#define TO_STR2(x) #x
+#define TO_STR(x) TO_STR2(x)
+#define VERSION_STRING (TO_STR(FILENAME))
+#define PENDULUM_VERSION (TO_STR(DIRECTORY))
+
 typedef vector< pair<vector<double>, double> > Training_data;
 
 const double PI {3.14159265359};
@@ -50,7 +56,7 @@ double variance(std::vector<double> const&);
 
 int main()
 {
-    cout << "The Controller Mode is: " << CONTROLLER_MODE << endl;
+    cout << "\n\nThe Controller Mode is: " << CONTROLLER_MODE << " and the filename is: " << VERSION_STRING << " and the directory is: " << PENDULUM_VERSION << endl;
     return 0;
 
 	/* Model initialization */ 
