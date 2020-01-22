@@ -13,12 +13,13 @@ def simulate_all_pendulums():
     pendulum_m1 = [1.0]
     pendulum_m2 = [0.3] #, 0.6, 1.5]
     pendulum_length = [0.5] #, 1.0] 
+
     # Generate some kind of pendulum model with different parameters
     # then for loop this shit
     for p_m1 in pendulum_m1:
         for p_l in pendulum_length:
             for p_m2 in pendulum_m2:
-                directory = 'M'+str(p_m1)+'L'+str(p_l)+'m'+str(p_m2)
+                directory = './test_script/M'+str(p_m1)+'L'+str(p_l)+'m'+str(p_m2)
                 # Create directory if does not exist
                 call(['mkdir', directory])
                 for start_value in pendulum_start_angle:
@@ -27,7 +28,7 @@ def simulate_all_pendulums():
 def run_subprogram(path_to_exec, directory, program_specific = None):
     """ Takes in the path to the executable, directory where result is saved and program specific constants """
     program = path_to_exec
-    controllers = [1, 2, 3]
+    controllers = [0, 1, 2, 3]
     for controller in controllers:
         call(['make', 'clean'])
         # '-s' suppresses warnings from matplotlib
