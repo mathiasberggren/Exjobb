@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <random>
 
+#include <type_printing>
 #include <fmi4cpp/fmi4cpp.hpp>
 
 #include "matplotlibcpp.h"
@@ -40,6 +41,7 @@ const double PI {3.14159265359};
 const double stop	   {10};
 const double stepSize {1E-3};
 const string fmuPath = "/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum/InvertedPendulum.fmu";
+const string xmlPath = "/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.xml";
 
 void read_from_file(vector<string> const& files, Training_data & training_data);
 void write_to_files(vector<string> const& files, Training_data const& training_data);
@@ -49,9 +51,20 @@ int main()
 {
     cout << "\n\nThe Controller Mode is: " << CONTROLLER_MODE << " [Training mode: " << TRAINING_MODE << "]" << " and the filename is: " << FILE_NAME << " and the directory is: " << PENDULUM_VERSION << endl;
 
-	/* Model initialization */ 
+
     fmi2::fmu fmu(fmuPath);
     auto cs_fmu = fmu.as_cs_fmu();
+    auto md1 = cs_fmu->get_model_description();
+    cout << "decltype(md1) is " << type_name<decltype(md1)>() << endl;
+
+ 
+    // cout << "decltype(md2) is " << type_name<decltype(md2)>() << endl;
+    // auto md_cs  = md2->as_cs_description();
+    // auto slave  = md_cs->new_instance();
+    return 0;
+	/* Model initialization */ 
+    // fmi2::fmu fmu(fmuPath);
+    // auto cs_fmu = fmu.as_cs_fmu();
     auto md = cs_fmu->get_model_description();
 
     auto slave = cs_fmu->new_instance();
@@ -294,24 +307,6 @@ void write_to_files(vector<string> const& files, Training_data const& training_d
     }
     cout << "Finished writing to files." << endl;
 }
-
-// RegressionDataset loadData(const std::string& dataFile,const std::string& labelFile)
-// {
-	// //we first load two separate data files for the training inputs and the labels of the data point
-	// Data<RealVector> inputs;
-	// Data<RealVector> labels;
-	// try {
-		// importCSV(labels, labelFile, ' ');
-        // cout << "First one went fine." << endl;
-		// importCSV(inputs, dataFile, ',');
-	// } catch (...) {
-        // std::cerr << "Unable to open file " <<  dataFile << " and/or " << labelFile << ". Check paths!" << endl;
-		// exit(EXIT_FAILURE);
-	// }
-	// //now we create a complete dataset which represents pairs of inputs and labels
-	// RegressionDataset data(inputs, labels);
-	// return data;
-// }
 
 double variance(std::vector<double> const& samples)
 {
