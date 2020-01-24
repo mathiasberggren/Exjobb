@@ -1,34 +1,39 @@
-#include <iostream>
-#include <fstream>
-#include <iomanip>
 #include <string>
 #include <memory>
 #include <vector>
+#include <random>
+#include <fstream>
+#include <iomanip>
 #include <utility>
 #include <numeric>
+#include <iostream>
 #include <algorithm>
-#include <random>
 
+/* Local dependencys */ 
+#include "PID.h"
 #include <type_printing>
+#include "./ML-models/net.h"
+#include "./ML-models/r_tree.h"
+#include "./ML-models/linear_model.h"
+
+/* Installed dependencys */ 
+/* https://github.com/lava/matplotlib-cpp */ 
+#include "matplotlibcpp.h"
+/* https://github.com/NTNU-IHB/FMI4cpp */ 
 #include <fmi4cpp/fmi4cpp.hpp>
 
-#include "matplotlibcpp.h"
-#include "PID.h"
-#include "./ML-models/net.h"
-#include "./ML-models/linear_model.h"
-#include "./ML-models/r_tree.h"
-
-using std::cout;
 using std::cin;
-using std::endl;
-using std::vector;
+using std::cout;
 using std::setw;
-using std::string;
+using std::endl;
 using std::pair;
+using std::vector;
+using std::string;
 using namespace fmi4cpp;
 using namespace fmi4cpp::solver;
 
 namespace plt = matplotlibcpp;
+typedef vector< pair<vector<double>, double> > Training_data;
 
 /* Macros FILENAME and DIRECTORY is defined when doing make */ 
 #define TO_STR2(x) #x
@@ -36,19 +41,17 @@ namespace plt = matplotlibcpp;
 #define FILE_NAME (TO_STR(FILENAME))
 #define PENDULUM_VERSION (TO_STR(DIRECTORY))
 
-typedef vector< pair<vector<double>, double> > Training_data;
-
 const double PI {3.14159265359};
 const double stop	   {10};
 const double stepSize {1E-3};
-const string fmuPath = "/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum/InvertedPendulum.fmu";
-const string xmlPath = "/home/lapbottom/Programming/Exjobb/Models/InvertedPendulum.xml";
 const vector<unsigned> topology {2, 25, 1};
+const string fmuPath = "/home/lapbottom/Programming/Exjobb/Models/\
+InvertedPendulum/InvertedPendulum.fmu";
 
-void read_from_file(vector<string> const& files, Training_data & training_data);
-void write_to_files(vector<string> const& files, Training_data const& training_data);
-double variance(vector<double> const&);
 double get_pendulum_start_angle();
+double variance(vector<double> const&);
+void read_from_file(vector<string> const& files, Training_data &);
+void write_to_files(vector<string> const& files, Training_data const&);
 
 void train_neuralnet(Net &, Training_data const&, Training_data const&,
         Training_data const&);
@@ -56,6 +59,14 @@ void train_linear_model(LinearModel &, Training_data const&,
         Training_data const&, Training_data const&);
 void train_tree(RegressionTree &, Training_data const&, Training_data const&,
         Training_data const&);
+
+/* Test later */ 
+// void run_simulation(std::unique_ptr<fmi4cpp::fmi2::cs_slave,\
+        // std::default_delete<fmi4cpp::fmi2::cs_slave> >
+        // vector<double> & angle_value, vector<double> & angle_velo,
+        // vector<double> & controller_input_value, vector<double> & plot_time,
+        // vector<double> & controller_output_value);
+
 
 int main()
 {
@@ -72,6 +83,8 @@ int main()
     auto var = md->get_variable_by_name("theta").as_real();
     auto slave = cs_fmu->new_instance();
 
+    // cout << "Type of slave: " << type_name<decltype(slave)>() << endl;
+    
     /* Initialize pendulum start angle */ 
     slave->setup_experiment();
     var.write(*slave,pendulum_angle*PI);
@@ -95,13 +108,13 @@ int main()
 #elif TRAINING_MODE == 0
     #if CONTROLLER_MODE == 1 
         Net nn_2 { topology };
-        nn_2.get_from_file("ML-models/saved_models/temp_nn.txt");
+        nn_2.get_from_file("ML-models/saved_models/nn_model.txt");
     #elif CONTROLLER_MODE == 2 
         LinearModel line {};
-        line.import("linear_regression_model.txt");
+        line.import("ML-models/saved_models/linear_regression_model.txt");
     #elif CONTROLLER_MODE == 3
-    // Import some tree stuff
-
+        RegressionTree tree {};
+        tree.import("ML-models/saved_models/tree_model.txt");
     #endif
 #endif
 
@@ -208,29 +221,20 @@ void train_models()
 
     Training_data training_data {};
     read_from_file(gather_files, training_data);
-    if(0)
-    {
-        vector<string> output_files { "input.csv", "gold_data.csv" };
-        write_to_files(output_files, training_data);
-        return;
-    }
-
     std::random_device rd;
     std::mt19937 g(rd());
     std::shuffle(training_data.begin(), training_data.end(), g);
-    /* ***************** */
-
-    cout << "This is the current number of training points that we got in our vector: " \
-        << training_data.size() << endl;
 
     // Get the indexes for how to split the data into test / validation / training
     Training_data::const_iterator start { training_data.begin()};
+
     Training_data::const_iterator train_index_end \
-    {training_data.begin() + (int)(training_data.size() * 0.5)};
+        {training_data.begin() + (int)(training_data.size() * 0.5)};
+
     Training_data::const_iterator validation_index_end \
-    {train_index_end  + (int)(training_data.size() * 0.25)};
-    Training_data::const_iterator test_end\
-    {training_data.end() - 1};
+        {train_index_end  + (int)(training_data.size() * 0.25)};
+
+    Training_data::const_iterator test_end {training_data.end() - 1};
 
     Training_data train_data { start, train_index_end};
     Training_data val_data   { train_index_end + 1, validation_index_end};    
@@ -243,13 +247,14 @@ void train_models()
     LinearModel l_model {1/k};
     train_linear_model(l_model, training_data, test_data, val_data);
 #elif CONTROLLER_MODE == 3
-
+    
 #endif
 }
 
 void train_neural_net(Net & nn, Training_data const& train_data,
         Training_data const& test_data, Training_data const& val_data)
 {
+    
     for(int i {}; i < 100; i++)
     {
         nn.train(train_data);
