@@ -10,9 +10,9 @@ import pandas as pd
 def simulate_all_pendulums():
     base = ['TRAINING_MODE=0']
     pendulum_start_angle = ['7.6', '5.4', '4.3', '17.12', '3.2', '5.6', '3.4', '2.3', '7.12', '1.2']
-    pendulum_m1 = [1.0]
-    pendulum_m2 = [0.3] #, 0.6, 1.5]
-    pendulum_length = [0.5] #, 1.0] 
+    pendulum_m1 = [1.0, 1.5, 2.0]
+    pendulum_m2 = [0.3, 0.5, 1.0]
+    pendulum_length = [0.5, 1.0, 2.0] 
 
     # for loop this shit
     for start_value in pendulum_start_angle:
@@ -24,14 +24,28 @@ def simulate_all_pendulums():
                     # Create directory if does not exist
                     call(['mkdir', directory])
                     # Run program with all different pendulums
-                    run_subprogram(str(sys.argv[1])+'-'+str(start_value), directory, program_specific)
+                    run_simulations(str(sys.argv[1])+'-'+str(start_value), directory, program_specific)
+
+def train_all_models():
+    base = ['TRAINING_MODE=1']
+    controllers = [1, 2]
+    print("About to start training, the following models will be trained:")
+    print(controllers)
+    print("Press enter to continue")
+    sys.stdin.read(1)
+    for controller in controllers: 
+        # call(['make', 'clean'])
+        print("Now training " + str(controller) + " controller")
+        call(['make', 'clean'])
+        call(['make', '-s', 'CONTROLLER_MODE=' + str(controller)]+base)
+        call(['./train_model-' +str(controller)])
+        
 
 
-
-def run_subprogram(path_to_exec, directory, program_specific = None):
+def run_simulations(path_to_exec, directory, program_specific = None):
     """ Takes in the path to the executable, directory where result is saved and program specific constants """
     program = path_to_exec
-    controllers = [0, 1]
+    controllers = [0, 1, 2, 3]
     for controller in controllers:
         call(['make', 'clean'])
         # '-s' make output is silent
@@ -40,7 +54,7 @@ def run_subprogram(path_to_exec, directory, program_specific = None):
 
 
 if (len(sys.argv)-1) < 1:
-    print("Call the script with: PATH_TO_EXECUTABLE")
-    quit()
+    print("To run simulations run the script with: PATH_TO_EXECUTABLE")
+    train_all_models()
 else:
     simulate_all_pendulums()
