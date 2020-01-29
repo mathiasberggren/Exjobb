@@ -8,21 +8,21 @@
   fmiVersion="1.0"
   modelName="InvertedPendulum"
   modelIdentifier="InvertedPendulum"
-  guid="{06d0eddf-ad96-4a0d-95bc-e69aeda487c4}"
-  generationDateAndTime="2019-09-13T10:32:06"
+  guid="{d9f61d6e-bde4-4137-8fa8-a94e21e2121f}"
+  generationDateAndTime="2020-01-22T15:22:13"
   variableNamingConvention="structured"
   numberOfContinuousStates="4"
   numberOfEventIndicators="0"
   >
   
   <VendorAnnotations>
-    <Tool name="OpenModelica Compiler OpenModelica 1.13.2"> </Tool>
+    <Tool name="OpenModelica Compiler OpenModelica 1.15.0~dev-44-g88ac7d7"> </Tool>
   </VendorAnnotations>
 
 
   <ModelVariables>
     <ScalarVariable name="theta"  valueReference="0" variability="continuous" causality="internal" alias="noAlias">
-      <Real start="3.14159265359" fixed="false"    />
+      <Real start="1.570796326795" fixed="false"    />
       <QualifiedName>
         <exp:QualifiedNamePart name="theta"/>
       </QualifiedName>
@@ -141,7 +141,7 @@
     </ScalarVariable> 
 
     <ScalarVariable name="Y"  valueReference="11" variability="continuous" causality="output" alias="noAlias">
-      <Real start="3.14159265359" fixed="false"   unit="rad" displayUnit="deg"/>
+      <Real start="1.570796326795" fixed="false"   unit="rad" displayUnit="deg"/>
       <QualifiedName>
         <exp:QualifiedNamePart name="Y"/>
       </QualifiedName>
@@ -173,7 +173,7 @@
       <VariableCategory>algebraic</VariableCategory>
     </ScalarVariable> 
     <ScalarVariable name="Y"  valueReference="14" variability="continuous" causality="output" alias="noAlias">
-      <Real start="3.14159265359" fixed="false"   unit="rad" displayUnit="deg"/>
+      <Real start="1.570796326795" fixed="false"   unit="rad" displayUnit="deg"/>
       <QualifiedName>
         <exp:QualifiedNamePart name="Y"/>
       </QualifiedName>
@@ -205,7 +205,7 @@
     </ScalarVariable> 
 
     <ScalarVariable name="l"  valueReference="17" variability="parameter" causality="internal" alias="noAlias">
-      <Real start="0.5" fixed="true"   unit="m" />
+      <Real start="1.0" fixed="true"   unit="m" />
       <QualifiedName>
         <exp:QualifiedNamePart name="l"/>
       </QualifiedName>
@@ -216,7 +216,7 @@
     </ScalarVariable> 
 
     <ScalarVariable name="m"  valueReference="18" variability="parameter" causality="internal" alias="noAlias">
-      <Real start="0.3" fixed="true" min="0.0"  unit="kg" />
+      <Real start="1.5" fixed="true" min="0.0"  unit="kg" />
       <QualifiedName>
         <exp:QualifiedNamePart name="m"/>
       </QualifiedName>
@@ -261,7 +261,7 @@
         <exp:QualifiedNamePart name="l"/>
       </equ:Parameter>
       <equ:BindingExp>
-        <exp:RealLiteral>0.5</exp:RealLiteral>
+        <exp:RealLiteral>1.0</exp:RealLiteral>
       </equ:BindingExp>
     </equ:BindingEquation>
 
@@ -270,7 +270,7 @@
         <exp:QualifiedNamePart name="m"/>
       </equ:Parameter>
       <equ:BindingExp>
-        <exp:RealLiteral>0.3</exp:RealLiteral>
+        <exp:RealLiteral>1.5</exp:RealLiteral>
       </equ:BindingExp>
     </equ:BindingEquation>
   </equ:BindingEquations>
@@ -370,7 +370,7 @@
         <exp:Identifier>
           <exp:QualifiedNamePart name="theta"/>
         </exp:Identifier>
-        <exp:RealLiteral>3.14159265359</exp:RealLiteral>
+        <exp:RealLiteral>1.570796326795</exp:RealLiteral>
       </exp:Sub>
     </equ:Equation>
 
@@ -396,7 +396,7 @@
         <exp:Identifier>
           <exp:QualifiedNamePart name="Y"/>
         </exp:Identifier>
-        <exp:RealLiteral>3.14159265359</exp:RealLiteral>
+        <exp:RealLiteral>1.570796326795</exp:RealLiteral>
       </exp:Sub>
     </equ:Equation>
     <equ:Equation>
@@ -434,11 +434,11 @@
     </equ:Equation>  
     <equ:Equation>
       <exp:Sub>
-         
       </exp:Sub>
     </equ:Equation>  
     <equ:Equation>
       <exp:Sub>
+         
       </exp:Sub>
     </equ:Equation>  
     <equ:Equation>
