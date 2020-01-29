@@ -16,7 +16,7 @@ CONTROLLER_MODE ?=0
 # 0 = Off, 1 = On
 TRAINING_MODE ?=0
 FILENAME ?="test_file"
-DIRECTORY ?="./"
+DIRECTORY ?="."
 
 DEFINED_CONSTS=-DTRAINING_MODE=$(TRAINING_MODE) -DCONTROLLER_MODE=$(CONTROLLER_MODE) -DFILENAME=$(FILENAME) -DDIRECTORY=$(DIRECTORY) -DSTART_ANGLE=$(START_ANGLE)
 SUFFIX=-$(START_ANGLE)-$(CONTROLLER_MODE)-$(TRAINING_MODE)
@@ -24,18 +24,20 @@ SUFFIX=-$(START_ANGLE)-$(CONTROLLER_MODE)-$(TRAINING_MODE)
 _ML_H=linear_model.h r_tree.h net.h
 _ML_O=linear_model.o r_tree.o net.o
 
-
 ML_DIR=./ML-models/
 ML_H=$(_ML_H:%=$(ML_DIR)%)
 ML_O=$(_ML_O:%=$(ML_DIR)%)
 
-
-
 CC=g++
-CCFLAGS=-std=c++17 -Wall -Wextra -pedantic # Removed because of warnings from matplotlib -Weffc++  
+CCFLAGS=-std=c++17 -g -Wall -Wextra -pedantic # Removed because of warnings from matplotlib -Weffc++  
 HEADERS:=PID.h $(ML_H) 
 OBJ:=simulate_pendulum.o PID.o $(ML_O)
-OUT:=simulate_pendulum$(SUFFIX)
+
+ifeq ($(TRAINING_MODE),1)
+	OUT:=train_model-$(CONTROLLER_MODE)
+else
+	OUT:=simulate_pendulum$(SUFFIX)
+endif
 
 all: $(OUT)
 
