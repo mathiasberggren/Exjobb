@@ -23,7 +23,7 @@ double LinearModel::loss(Training_data const& train_data)const
         sum += loss(training_sample.first[0], training_sample.first[1], training_sample.second);
     }
 
-    return sum;
+    return sum/train_data.size();
 }
 
 void LinearModel::fit(Training_data const& training_data, int epochs)

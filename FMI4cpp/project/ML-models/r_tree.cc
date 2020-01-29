@@ -30,17 +30,22 @@ void RegressionTree::dump(std::string const& filename)const
         std::ofstream out_file {filename};
         std::stack<Node*> context {};
         context.push(root);
-
+        int node_counter = 1;
         while(!context.empty())
         {
+#if DEBUG == 1
+            std::cout << "Popped " << node_counter << " nodes to stack" << std::endl;
+            std::cout << "Context size: " << context.size() << std::endl;
+#endif
             /* Look ahead on top to avoid issue when popping nullptr */ 
             Node* tmp = context.top();
             context.pop();
             out_file << tmp -> to_string() << std::endl;
-            if(tmp->split)
+            if(tmp->split != nullptr)
             {
                 context.push(tmp->right);
                 context.push(tmp->left);
+                node_counter += 2;
             }
         }
     } catch(std::exception& e) {
@@ -61,12 +66,13 @@ void RegressionTree::import(std::string const& filename)
         double threshold {};
 
         Node* tmp = nullptr;
-
         while(std::getline(in_file, row))
         {
             std::stringstream ss {row}; 
             ss >> depth >> value;
-
+#if DEBUG == 1
+            std::cout << "Depth: " << depth << " value:" << value << std::endl;
+#endif
             if(root == nullptr)
             {
                 root = new Node();
@@ -109,6 +115,17 @@ void RegressionTree::import(std::string const& filename)
     }
 }
 
+/* Only handles two features atm */ 
+double RegressionTree::loss(Training_data const& test_data)const
+{
+    double MSE {};
+    for(auto data : test_data)
+    {
+        MSE += std::pow(data.second - predict(data.first[0], data.first[1]), 2);
+    }
+    return MSE/test_data.size();
+}
+
 template <class T = void>
 struct sum_trainingdata_y
 {
@@ -141,7 +158,7 @@ RegressionTree::Node::Node(Node* const& p, \
         Split* const& s) : parent {p}, right {nullptr}, left {nullptr}, split{s}, depth {}, value {}
 {
 
-    if(p == nullptr)
+    if(p == nullptr) 
         std::cout << "This was weird, parent is a nullptr" << std::endl;
     else 
         depth = p->depth + 1;
@@ -170,13 +187,16 @@ RegressionTree::Node::~Node()
     }
 }
 
-RegressionTree::Node::Split::Split(double threshold, int feature)
+RegressionTree::Node::Split::Split(double threshold, unsigned feature)
     : var_idx{feature}, threshold{threshold}
 {}
 
 double RegressionTree::predict(double x1, double x2)const
 {
-    return root -> predict(x1, x2);  
+    if(root != nullptr)
+        return root -> predict(x1, x2);  
+    else
+        return 0;
 }
 
 double RegressionTree::Node::predict(double x1, double x2)const
@@ -185,7 +205,6 @@ double RegressionTree::Node::predict(double x1, double x2)const
      * check which way to descend for this datapoint to reach leaf node. 
      * No split = leaf node is reached, return value of the node
      */
-
 #if DEBUG == 1
     if(split != nullptr && (left == nullptr && right == nullptr))
     {
@@ -281,16 +300,16 @@ void RegressionTree::train(Node*& element, Training_data const& train_data, Node
     /* If we reached max depth, dont create new node */ 
     if(parent && parent->depth + 2 > max_depth)
     {
-#if DEBUG_TRAINING_FUNCTION == 1
+#if DEBUG_TRAIN_FUNCTION == 1
         std::cout << "Max depth was hit, quitting training" << std::endl;
 #endif
         element = nullptr;
         return;
     }
 
-    if(train_data.size() < leaf_threshold * 2)
+    if(train_data.size() < leaf_threshold)
     {
-#if DEBUG_TRAINING_FUNCTION == 1
+#if DEBUG_TRAIN_FUNCTION == 1
         std::cout << "Not enough data left to train on for node, returning" << std::endl;
 #endif
         element = nullptr;
@@ -324,14 +343,16 @@ void RegressionTree::train(Node*& element, Training_data const& train_data, Node
         {
             mean[i] = (it->first[i] + (it+1)->first[i]) / 2;
         }
+        /*
 #if DEBUG_TRAIN_FUNCTION == 1
         for(unsigned i {}; i < num_features; i++) 
         {
             std::cout << "The mean in train::best_split was: " << mean[i] << std::endl;
         }
 #endif
+*/
 
-        unsigned* k_count = new unsigned[num_features] {};
+        //unsigned* k_count = new unsigned[num_features] {};
         double* residual = new double[num_features] {};
 
         /* Classify all points according to previous mean */ 
@@ -342,12 +363,11 @@ void RegressionTree::train(Node*& element, Training_data const& train_data, Node
                 residual[i] += std::pow(train_sample.second - mean[i], 2);
                 /* Check how many points that will be classified 
                  * into the possibly new left/right leaf nodes */
-                if(mean[i] < train_sample.first[i])
-                    ++k_count[i];
-
+                //if(mean[i] < train_sample.first[i])
+                //    ++k_count[i];
             }
         }
-
+/*
 #if DEBUG_TRAIN_FUNCTION == 1
         for(unsigned k {}; k < num_features; k++)
         {
@@ -355,11 +375,12 @@ void RegressionTree::train(Node*& element, Training_data const& train_data, Node
             std::cout << "k-count: " << k_count[k] << " for feature " << k << std::endl;
         }
 #endif
+*/
 
         /* Classify all data points to check if we have enough k_count to motivate new node */ 
         for(unsigned i {}; i < num_features; i++)
         {
-            if(leaf_threshold < k_count[i] && ((train_data.size() - leaf_threshold) > k_count[i]))
+          //  if(leaf_threshold < k_count[i] && ((train_data.size() - leaf_threshold) > k_count[i]))
             {
                 if(residual[i] < best_split[i][0])
                 {
@@ -369,7 +390,7 @@ void RegressionTree::train(Node*& element, Training_data const& train_data, Node
             }
         }
         delete[] mean;
-        delete[] k_count;
+        //delete[] k_count;
         delete[] residual;
     }
 
@@ -410,15 +431,22 @@ void RegressionTree::train(Node*& element, Training_data const& train_data, Node
         else
             t2.push_back(train);
     }
+#if DEBUG_TRAIN_FUNCTION == 1
+    std::cout << "Residual: " << (*max)[0] << " Feature chosen: " << (*max)[2] << \
+        " Threshold: " << (*max)[1] << " T1.size() = " << t1.size() 
+        << " T2.size() = " << t2.size() << std::endl;
+#endif
 
-    train(element->left, t1, element);
-    train(element->right, t2, element);
+    if(leaf_threshold <= t2.size() && leaf_threshold <= t1.size()) 
+    {
+        train(element->left, t1, element);
+        train(element->right, t2, element);
+    }
 
     if(element->left == nullptr && element->right == nullptr)
     {
         delete element->split;
         element->split = nullptr;
-        element->value = mean_y(train_data);
     }
     else if(element->left == nullptr && element->right != nullptr)
     {
@@ -426,7 +454,6 @@ void RegressionTree::train(Node*& element, Training_data const& train_data, Node
         delete element->split;
         element->right = nullptr;
         element->split = nullptr;
-        element->value = mean_y(train_data);
     }
     else if(element->left != nullptr && element->right == nullptr)
     {
@@ -434,8 +461,9 @@ void RegressionTree::train(Node*& element, Training_data const& train_data, Node
         delete element->split;
         element->left = nullptr;
         element->split = nullptr;
-        element->value = mean_y(train_data); 
     }   
+    element->value = mean_y(train_data); 
+    
     // (*max)[0] //= residual;
     // (*max)[1] = mean value for node
     // (*max)[2] = feature 

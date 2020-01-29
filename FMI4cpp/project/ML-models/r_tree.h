@@ -9,12 +9,10 @@
 #include <utility>
 #include <vector>
 
-
 typedef std::vector< std::pair<std::vector<double>, double> > Training_data;
 
 class RegressionTree
 {
-    /* Forward declaration */ 
     private:
         struct Node;
         struct Split;
@@ -27,6 +25,7 @@ class RegressionTree
         void set_leaf_threshold(unsigned leaf) { leaf_threshold = leaf; }
         void set_max_depth(unsigned depth) { max_depth = depth; }
         void train(Training_data const&);
+        double loss(Training_data const&)const;
         void dump(std::string const& filename)const;
         void import(std::string const& filename);
     private:
@@ -39,14 +38,10 @@ class RegressionTree
         {
             struct Split
             {
-                Split(double threshold, int feature);
+                Split(double threshold, unsigned feature);
                 inline bool predict(double x1, double x2)const;
-                int var_idx;
-                //bool inversed;
-                /* Could be boolean function* instead */ 
+                unsigned var_idx;
                 double threshold;
-                // double quality;      
-                // Split* next;
                 std::string to_string()const;
             };
 
@@ -56,8 +51,6 @@ class RegressionTree
             Node& operator=(Node const&) = default;
             Node(Node* const&, Split* const&); 
             Node(Split* const&); 
-            // Node(int depth, int value);
-            // Node(int depth, int value, int var_idx, int threshold);
             ~Node();
             double predict(double x1, double x2)const;
             double gini_impurity(Training_data const&)const;
@@ -71,7 +64,5 @@ class RegressionTree
             double value;
         };
 };
-
-
 
 #endif

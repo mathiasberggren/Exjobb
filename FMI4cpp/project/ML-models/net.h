@@ -19,7 +19,7 @@ class Net
         void dump_to_file(std::string const& filename)const;
         void get_from_file(std::string const& filename);
 		double forward(vector<double> const&);
-        double validate(Training_data const& validation_data);
+        double loss(Training_data const& validation_data);
         double get_recent_average_error() const { return recent_average_error; }
 		inline double get_result()const;
 	private:
@@ -44,9 +44,9 @@ class Neuron
 		void   calc_hidden_gradients(Layer const& next_layer);
 		void   update_input_weights(Layer & prev_layer);
 		double get_output() const { return output_value; }
-	private:
 		static double eta; 
 		static double alpha;
+	private:
 		static double transfer_function(double);
 		static double transfer_function_derivative(double);
 		double sumDOW(Layer const& next_layer)const;

@@ -120,7 +120,7 @@ double Net::forward(vector<double> const& input)
     return get_result();
 }
 
-double Net::validate(Training_data const& validation_data)
+double Net::loss(Training_data const& validation_data)
 {
     double sum_square_error {};
     for(auto datapoint : validation_data)
@@ -184,7 +184,6 @@ void Net::set_weights(vector<double> const& w)
                 c.weight = w[i++];        
         }
     } 
-    cout << "Successfully loaded weights, there were " << i << " weights in total!" << endl;
 }
 
 Neuron::Neuron(unsigned int outputs, unsigned int index)

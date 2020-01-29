@@ -1,0 +1,15 @@
+
+
+Linearmodel: 
+    - Learning_rate
+
+Neural net: 
+    - Learning rate
+    - Momentum
+
+Tree:
+    - Depth
+    - leaf_k (Least amount of data_points required to create a leaf) 
+
+
+

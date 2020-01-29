@@ -10,7 +10,7 @@ class LinearModel
 {
     public:
         LinearModel(double learning_rate = 0.01);
-        inline double predict(double x1, double x2)const;
+        double predict(double x1, double x2)const;
         double loss(Training_data const& train_data)const;
         void fit(Training_data const&, int epochs = 1);
         void dump(std::string const& filename )const;
