@@ -23,8 +23,7 @@
 #include "matplotlibcpp.h"
 /* https://github.com/NTNU-IHB/FMI4cpp */ 
 #include <fmi4cpp/fmi4cpp.hpp>
-// #include <fmi4cpp/mlog.hpp>
-// #include <fmi4cpp/file_logger.hpp>
+
 using std::cin;
 using std::cout;
 using std::setw;
