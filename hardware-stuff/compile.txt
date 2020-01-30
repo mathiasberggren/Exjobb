@@ -1,0 +1,2 @@
+gcc fmi_test.cc -I FMIL/svn.jmodelica.org/FMILibrary/tags/2.0.3/build/doc -I FMIL/svn.jmodelica.org/FMILibrary/tags/2.0.3/src/Import/include/ -I FMIL/svn.jmodelica.org/FMILibrary/tags/2.0.3/build/ -I FMIL/svn.jmodelica.org/FMILibrary/tags/2.0.3/src/Util/include/ -I FMIL/svn.jmodelica.org/FMILibrary/tags/2.0.3/ThirdParty/FMI/default/ -L./FMIL/svn.jmodelica.org/FMILibrary/tags/2.0.3/build -lfmicapi -lfmiimport -lfmilib -lfmixml -lfmizip -ljmutils -ldl
+
